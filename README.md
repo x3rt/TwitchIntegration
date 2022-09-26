@@ -1,6 +1,6 @@
 # TwitchIntegration for BiBites
 
-This is a mod for BiBite the genetic algorithm Simulation
+This is a mod for BiBites the genetic algorithm Simulation
 made by Leo at https://leocaussan.itch.io/
 
 
