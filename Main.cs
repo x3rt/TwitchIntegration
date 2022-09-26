@@ -19,14 +19,13 @@ namespace TwitchIntegration
 {
     public class Main : MelonMod
     {
-        
         public static bool IsEnabled;
         public static bool showGUI;
-        
+
         private static object coRoutine;
         private static bool canRun = true;
         private static bool isRunning = false;
-        private static string currentUser = String.Empty;
+        private TimeController timeController;
 
 
         public override void OnApplicationStart()
@@ -55,7 +54,7 @@ namespace TwitchIntegration
         {
             LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
 
-            
+
             //buildIndex 0 = Loading Screen
             //buildIndex 1 = Main Menu
             //buildIndex 2 = Game
@@ -68,10 +67,8 @@ namespace TwitchIntegration
             {
                 isRunning = false;
             }
-            
-            
         }
-        
+
 
         public override void OnLateUpdate()
         {
@@ -82,56 +79,30 @@ namespace TwitchIntegration
 
             if (Input.GetKeyDown(KeyCode.F3))
             {
+                // There was stuff here before for testing purposes
             }
+
             if (Input.GetKeyDown(KeyCode.F4))
             {
+                // There was stuff here before for testing purposes
             }
-            
+
             if (Input.GetKeyDown(KeyCode.F6))
             {
-                GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-                foreach (GameObject t in array3)
-                {
-                    Vector2 randomVector = new Vector2(Random.Range(-400f, 400f), Random.Range(-400f, 400f));
-                    t.GetComponent<Rigidbody2D>().velocity = (10 * randomVector / Time.timeScale);
-                }
+                // There was stuff here before for testing purposes
             }
 
             if (Input.GetKeyDown(KeyCode.F8))
             {
-                // BibiteSpawner.UpdateCapNumber(50);
-                // LoggerInstance.Msg($"timeSlider.value: {timeController.timeSlider.value}");
-                // LoggerInstance.Msg($"timeFactor: {timeController.timeFactor}");
-                // LoggerInstance.Msg($"calc f to slider: {Mathf.Log(timeController.timeFactor, 5)}");
-                // LoggerInstance.Msg($"calc slider to f: {Mathf.Pow(5f, timeController.timeSlider.value)}");
-                // BibiteSpawner.UpdateCapNumber(100);
-                
-                
-                
-                // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor + 0.1f, 5);
-                //
-                // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor - 0.1f, 5);
-                //
-                //
-                //
-                //
-                // timeController.timeSlider.value = Mathf.Log(4, 5); //convert float to slider value (4 in this case)
+                // There was stuff here before for testing purposes
             }
 
             if (Input.GetKeyDown(KeyCode.F9))
             {
-                
             }
-            
+
             if (Input.GetKeyDown(KeyCode.F10))
             {
-                GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-                float num = 0f;
-                GameObject gameObject = null;
-                for (int i = 0; i < array3.Length; i++)
-                {
-                    array3[i].GetComponent<BibiteControl>().LayEgg();
-                }
             }
         }
 
@@ -147,23 +118,14 @@ namespace TwitchIntegration
         private void DrawMenu()
         {
             GUI.Box(new Rect(0, 0, 300, 500), "Twitch Integration");
-            GUI.TextField(new Rect(10, 10, 180, 20), currentUser, 25);
+            GUI.TextField(new Rect(10, 10, 180, 20), Settings.Instance.TwitchUsername, 25);
         }
 
 
-
-
-
-
-
-        IEnumerator HighestGeneration()
+        private IEnumerator HighestGeneration()
         {
             LoggerInstance.Msg("Getting highest generation");
-            // timeController = Object.FindObjectOfType<TimeController>();
-            // yield return new WaitForSeconds(0.15f);
-            // yield return new WaitForSeconds(0.15f);
-            
-            
+
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0f;
             GameObject gameObject = null;
@@ -176,22 +138,61 @@ namespace TwitchIntegration
                     gameObject = array3[i];
                 }
             }
+
+            float? generation;
             if (gameObject != null)
             {
-                float generation = gameObject.GetComponent<BibiteGenes>().generation;
+                generation = gameObject.GetComponent<BibiteGenes>().generation;
                 LoggerInstance.Msg($"Highest generation: {generation}");
             }
-            
+
             yield return new WaitForSeconds(.5f);
         }
 
 
+        // ReSharper disable UnusedMember.Local
+        private void pushAll()
+        {
+            GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
+            foreach (GameObject t in array3)
+            {
+                Vector2 randomVector = new Vector2(Random.Range(-400f, 400f), Random.Range(-400f, 400f));
+                t.GetComponent<Rigidbody2D>().velocity = (10 * randomVector / Time.timeScale);
+            }
+        }
 
-        private TimeController timeController;
-        // private TimeController timeController;
+        private void layAll()
+        {
+            GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
+            foreach (GameObject t in array3)
+            {
+                t.GetComponent<BibiteControl>().LayEgg();
+            }
+        }
+
+
+        private void otherStuff()
+        {
+            // BibiteSpawner.UpdateCapNumber(50);
+            // LoggerInstance.Msg($"timeSlider.value: {timeController.timeSlider.value}");
+            // LoggerInstance.Msg($"timeFactor: {timeController.timeFactor}");
+            // LoggerInstance.Msg($"calc f to slider: {Mathf.Log(timeController.timeFactor, 5)}");
+            // LoggerInstance.Msg($"calc slider to f: {Mathf.Pow(5f, timeController.timeSlider.value)}");
+            // BibiteSpawner.UpdateCapNumber(100);
+
+
+            // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor + 0.1f, 5);
+            //
+            // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor - 0.1f, 5);
+            //
+            //
+            //
+            //
+            // timeController.timeSlider.value = Mathf.Log(4, 5); //convert float to slider value (4 in this case)
+        }
+        // ReSharper restore UnusedMember.Local
         
-
-
-
+        
+        
     }
 }
