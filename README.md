@@ -18,7 +18,7 @@ Feature list:
 
 - Make Bibites lay once 
 
-
+- Change min/max amount of BiBites
 
 ----------------------
 
@@ -36,3 +36,6 @@ Planned/To-Do:
 
 - External GUI or console menu 
 
+- Random Buffs for all/focused BiBites ( refill food, heal, refill stamina etc)
+
+- live food/plant density/size rate/spawn rate adjustments
