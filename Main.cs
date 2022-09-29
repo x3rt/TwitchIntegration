@@ -15,7 +15,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.1", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.2", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -52,7 +52,8 @@ namespace TwitchIntegration
 
                     try
                     {
-                        if (GameObject.Find("__app")?.GetComponent<TwitchChat>() == null)
+                        var a = GameObject.Find("__app")?.GetComponent<TwitchChat>();
+                        if (a == null)
                         {
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Twitch Chat not found, creating new one");
@@ -62,9 +63,15 @@ namespace TwitchIntegration
                         }
                         else
                         {
-
-                            if (Settings.Instance.debugMode)
-                                LoggerInstance.Msg("Already running Twitch Chat");
+                            //if no message for 5 minutes
+                            if (DateTime.Now.Subtract(a.lastMessageTime).TotalMinutes > 5)
+                            {
+                                if (Settings.Instance.debugMode)
+                                    LoggerInstance.Msg("Twitch Chat found, but no message for 5 minutes, destroying");
+                                Object.Destroy(a);
+                                Thread.Sleep(1000);
+                                GameObject.Find("__app")?.AddComponent<TwitchChat>();
+                            }
                         }
 
                         if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
@@ -75,11 +82,6 @@ namespace TwitchIntegration
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added event handlers");
 
-                        }
-                        else
-                        {
-                            if (Settings.Instance.debugMode)
-                                LoggerInstance.Msg("Already running Event Handlers");
                         }
                     }
                     catch (Exception e)

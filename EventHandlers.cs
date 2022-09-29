@@ -12,7 +12,12 @@ namespace TwitchIntegration
         {
             InvokeRepeating("CinemaCam",2, 0.05f);
         }
-        
+
+        private void OnDestroy()
+        {
+            CancelInvoke("CinemaCam");
+        }
+
         void CinemaCam()
         {
             if (!Main.isRunning) return;

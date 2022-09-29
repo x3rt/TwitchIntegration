@@ -14,6 +14,9 @@ namespace TwitchIntegration
         internal StreamReader reader;
         internal StreamWriter writer;
         public static TwitchChat Instance;
+        
+        //time
+        public DateTime lastMessageTime;
 
 
         public string username, password, channelName; //Get the password from https://twitchapps.com/tmi
@@ -26,6 +29,14 @@ namespace TwitchIntegration
             username = Settings.Instance.TwitchUsername;
             channelName = Settings.Instance.TwitchUsername;
             Connect();
+            InvokeRepeating("Ping", 0f, 60f);
+        }
+
+        private void Ping()
+        {
+            
+            writer.Write("PING :tmi.twitch.tv");
+            writer.Flush();
         }
 
         void Update()
@@ -43,6 +54,7 @@ namespace TwitchIntegration
             twitchClient.Close();
             reader = StreamReader.Null;
             writer = StreamWriter.Null;
+            CancelInvoke("Ping");
         }
 
         public void Connect()
@@ -68,6 +80,7 @@ namespace TwitchIntegration
                 string? message = reader.ReadLine();
 
                 if (message == null) return;
+                lastMessageTime = DateTime.Now;
                 ParsedMessage parsedMessage = new ParsedMessage(message);
                 if(Settings.Instance.debugMode)
                     Main.loggerInstance?.Msg($"{parsedMessage}");
@@ -551,5 +564,10 @@ namespace TwitchIntegration
 
             return parsedCommand;
         }
+        
+        //
+        
+        
+        
     }
 }
