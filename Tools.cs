@@ -59,7 +59,7 @@ namespace TwitchIntegration
             float num = float.MaxValue;
             if (Camera.main == null)
             {
-                Main.loggerInstance?.Msg("There is not camera... WHAT?");
+                Main.loggerInstance?.Msg("There is no camera... WHAT?");
                 return null;
             }
 

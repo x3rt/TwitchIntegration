@@ -83,7 +83,6 @@ namespace TwitchIntegration
 
         private async void HandleParsedMessage(ParsedMessage parsedMessage)
         {
-            Main.loggerInstance?.Msg($"Command: " + parsedMessage.command?.command);
             switch (parsedMessage.command?.command)
             {
                 case "PING":
@@ -96,7 +95,6 @@ namespace TwitchIntegration
                 }
                 case "PRIVMSG":
                 {
-                    Main.loggerInstance?.Msg("Got a message");
                     string? message = parsedMessage.parameters;
 
                     if (message?.StartsWith(Settings.Instance.CommandPrefix) ?? false)
@@ -109,7 +107,6 @@ namespace TwitchIntegration
                             args = splitMessage.Skip(1).ToList();
                         }
                         
-                        Main.loggerInstance?.Msg($"Real Command: {command}");
                         HandleCommand(command, args, parsedMessage);
                     }
 
@@ -126,7 +123,6 @@ namespace TwitchIntegration
 
         private void HandleCommand(string command, List<string>? args, ParsedMessage parsedMessage)
         {
-            Main.loggerInstance?.Msg($"Handling commandasdasdd: {command}");
             if (parsedMessage.tags?.broadcaster ?? false)
             {
                 if (command == "reload")
@@ -266,9 +262,7 @@ namespace TwitchIntegration
             
             if (command is "ping")
             {
-                Main.loggerInstance?.Msg("was pinge command");
                 SendChat("Hi CoolCat");
-                Main.loggerInstance?.Msg("Sent hi");
             }
 
             if (command is "stats")
