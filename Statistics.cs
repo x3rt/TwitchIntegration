@@ -22,7 +22,7 @@ namespace TwitchIntegration
 
 
         public DateTime? lastRefresh { get; set; }
-        public DateTime? lastSave { get; set; } = DateTime.Now;
+        public DateTime lastSave { get; set; } = DateTime.Now;
 
         private void Start()
         {
@@ -45,7 +45,7 @@ namespace TwitchIntegration
                 lastRefresh = DateTime.Now;
             }
 
-            if (lastSave == null || (DateTime.Now - lastSave.Value).TotalSeconds > 60)
+            if ((DateTime.Now - lastSave).TotalSeconds > 60)
             {
                 Settings.Save();
                 lastSave = DateTime.Now;
