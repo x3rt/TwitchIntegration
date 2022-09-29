@@ -123,6 +123,7 @@ namespace TwitchIntegration
                 case "JOIN":
                 {
                     Main.loggerInstance?.Msg($"Joined channel: {parsedMessage.source?.nick ?? "Unknown"}");
+                    SendChat("Hello! I am connected to chat");
                     break;
                 }
             }
