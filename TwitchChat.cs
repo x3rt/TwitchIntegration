@@ -48,7 +48,7 @@ namespace TwitchIntegration
             writer = StreamWriter.Null;
         }
 
-        public void Connect()
+        public async void Connect()
         {
             Main.loggerInstance?.Msg("Connecting to twitch");
             twitchClient = new TcpClient("irc.chat.twitch.tv", 6667);
@@ -56,12 +56,12 @@ namespace TwitchIntegration
             writer = new StreamWriter(twitchClient.GetStream());
             writer.AutoFlush = true;
 
-            writer.WriteLine("PASS " + password);
-            writer.WriteLine("NICK " + username.ToLower());
-            writer.WriteLine("USER " + username.ToLower() + " 8 * :" + username.ToLower());
-            writer.WriteLine("JOIN #" + channelName.ToLower());
-            writer.WriteLine("CAP REQ :twitch.tv/commands twitch.tv/tags");
-            writer.Flush();
+            await writer.WriteLineAsync("PASS " + password);
+            await writer.WriteLineAsync("NICK " + username.ToLower());
+            await writer.WriteLineAsync("USER " + username.ToLower() + " 8 * :" + username.ToLower());
+            await writer.WriteLineAsync("JOIN #" + channelName.ToLower());
+            await writer.WriteLineAsync("CAP REQ :twitch.tv/commands twitch.tv/tags");
+            await writer.FlushAsync();
             Update();
         }
 
@@ -81,20 +81,22 @@ namespace TwitchIntegration
             }
         }
 
-        private void HandleParsedMessage(ParsedMessage parsedMessage)
+        private async void HandleParsedMessage(ParsedMessage parsedMessage)
         {
+            Main.loggerInstance?.Msg($"Command: " + parsedMessage.command?.command);
             switch (parsedMessage.command?.command)
             {
                 case "PING":
                 {
                     string res = parsedMessage.command.command.Replace("PING", "PONG");
-                    writer.Write(res);
-                    writer.Flush();
+                    await writer.WriteLineAsync(res);
+                    await writer.FlushAsync();
                     Main.loggerInstance?.Msg("Responded to ping from Twitch");
                     break;
                 }
                 case "PRIVMSG":
                 {
+                    Main.loggerInstance?.Msg("Got a message");
                     string? message = parsedMessage.parameters;
 
                     if (message?.StartsWith(Settings.Instance.CommandPrefix) ?? false)
@@ -106,7 +108,8 @@ namespace TwitchIntegration
                         {
                             args = splitMessage.Skip(1).ToList();
                         }
-
+                        
+                        Main.loggerInstance?.Msg($"Real Command: {command}");
                         HandleCommand(command, args, parsedMessage);
                     }
 
@@ -123,6 +126,7 @@ namespace TwitchIntegration
 
         private void HandleCommand(string command, List<string>? args, ParsedMessage parsedMessage)
         {
+            Main.loggerInstance?.Msg($"Handling commandasdasdd: {command}");
             if (parsedMessage.tags?.broadcaster ?? false)
             {
                 if (command == "reload")
@@ -258,9 +262,13 @@ namespace TwitchIntegration
             }
 
 
+            
+            
             if (command is "ping")
             {
-                SendChat("PONG CoolCat");
+                Main.loggerInstance?.Msg("was pinge command");
+                SendChat("Hi CoolCat");
+                Main.loggerInstance?.Msg("Sent hi");
             }
 
             if (command is "stats")
@@ -270,12 +278,13 @@ namespace TwitchIntegration
         }
 
 
-        public void SendChat(string message)
+        public async void SendChat(string message)
         {
             if (!twitchClient.Connected)
                 Connect();
-            writer.WriteLine($"PRIVMSG #{channelName} :{message}");
-            writer.Flush();
+            await writer.FlushAsync();
+            await writer.WriteLineAsync($"PRIVMSG #{channelName} :{message}");
+            await writer.FlushAsync();
         }
     }
 
@@ -539,7 +548,14 @@ namespace TwitchIntegration
                     break;
                 case "421":
                     if (Settings.Instance.debugMode)
+                    {
                         Main.loggerInstance?.Msg($"Unsupported IRC command: {commandParts[2]}");
+                        Main.loggerInstance?.Msg($"Full message: {rawCommandComponent}");
+                        // return parseCommand(rawCommandComponent.Replace(commandParts[2],
+                        //     commandParts[2].Replace("PONG","")));
+
+                    }
+
                     return null;
                     break;
                 case "001":
