@@ -29,14 +29,6 @@ namespace TwitchIntegration
             username = Settings.Instance.TwitchUsername;
             channelName = Settings.Instance.TwitchUsername;
             Connect();
-            InvokeRepeating("Ping", 0f, 60f);
-        }
-
-        private void Ping()
-        {
-            
-            writer.Write("PING :tmi.twitch.tv");
-            writer.Flush();
         }
 
         void Update()
