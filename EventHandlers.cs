@@ -10,12 +10,15 @@ namespace TwitchIntegration
     {
         private void Awake()
         {
-            InvokeRepeating("CinemaCam",2, 0.05f);
         }
 
         private void OnDestroy()
         {
-            CancelInvoke("CinemaCam");
+        }
+
+        private void Update()
+        {
+            CinemaCam();
         }
 
         void CinemaCam()
