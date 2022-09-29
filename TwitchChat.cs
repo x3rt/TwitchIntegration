@@ -46,7 +46,6 @@ namespace TwitchIntegration
             twitchClient.Close();
             reader = StreamReader.Null;
             writer = StreamWriter.Null;
-            CancelInvoke("Ping");
         }
 
         public void Connect()
