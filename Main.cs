@@ -15,7 +15,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.2", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.3", "x3rt")]
 
 
 namespace TwitchIntegration

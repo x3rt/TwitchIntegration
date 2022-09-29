@@ -14,7 +14,7 @@ namespace TwitchIntegration
         internal StreamReader reader;
         internal StreamWriter writer;
         public static TwitchChat Instance;
-        
+
         //time
         public DateTime lastMessageTime;
 
@@ -54,6 +54,7 @@ namespace TwitchIntegration
             twitchClient = new TcpClient("irc.chat.twitch.tv", 6667);
             reader = new StreamReader(twitchClient.GetStream());
             writer = new StreamWriter(twitchClient.GetStream());
+            writer.AutoFlush = true;
 
             writer.WriteLine("PASS " + password);
             writer.WriteLine("NICK " + username.ToLower());
@@ -73,7 +74,7 @@ namespace TwitchIntegration
                 if (message == null) return;
                 lastMessageTime = DateTime.Now;
                 ParsedMessage parsedMessage = new ParsedMessage(message);
-                if(Settings.Instance.debugMode)
+                if (Settings.Instance.debugMode)
                     Main.loggerInstance?.Msg($"{parsedMessage}");
 
                 HandleParsedMessage(parsedMessage);
@@ -130,10 +131,9 @@ namespace TwitchIntegration
                     Commands.ReloadSettings();
                 }
             }
-            
+
             if (parsedMessage.tags?.mod ?? false)
             {
-
                 if (command is "lay")
                 {
                     if (args?.ElementAtOrDefault(0) == "all")
@@ -175,8 +175,7 @@ namespace TwitchIntegration
                     if (args?[0] != null)
                         Commands.UpdateMaximumBiBites(Tools.MinMaxDefault<int>(int.Parse(args[0]), 1, 1000));
                 }
-                
-                
+
 
                 else if (command is "select")
                 {
@@ -195,10 +194,21 @@ namespace TwitchIntegration
                         Main.isCinematic = false;
                         UserControl.Instance.ClearTarget();
                     }
-                    
+                    else if (args?[0] == "oldest")
+                    {
+                        GameObject? a = Tools.GetOldestBitbite();
+                        if (a != null)
+                            UserControl.Instance.SelectTarget(a);
+                    }
+                    else if (args?[0] == "highestgen" || args?[0] == "highest")
+                    {
+                        GameObject? a = Tools.GetHighestGenerationBitbite();
+                        if (a != null)
+                            UserControl.Instance.SelectTarget(a);
+                    }
                 }
-                
-                
+
+
                 else if (command is "cinematic" or "cin" or "cinema" or "cinema")
                 {
                     if (args == null)
@@ -256,7 +266,6 @@ namespace TwitchIntegration
             if (command is "stats")
             {
                 SendChat($"Highest current Generation: {Tools.GetHighestGeneration()}");
-                
             }
         }
 
@@ -268,8 +277,6 @@ namespace TwitchIntegration
             writer.WriteLine($"PRIVMSG #{channelName} :{message}");
             writer.Flush();
         }
-
-        
     }
 
     public class Tags
@@ -556,10 +563,7 @@ namespace TwitchIntegration
 
             return parsedCommand;
         }
-        
+
         //
-        
-        
-        
     }
 }

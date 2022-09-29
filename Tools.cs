@@ -125,5 +125,45 @@ namespace TwitchIntegration
 
             return 0;
         }
+
+        public static GameObject? GetOldestBitbite()
+        {
+            GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
+            float num = 0.0f;
+            GameObject newTarget = (GameObject)null;
+            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
+            {
+                InternalClock component = gameObjectsWithTag[index].GetComponent<InternalClock>();
+                if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+                {
+                    float timeAlive = component.timeAlive;
+                    if ((double)timeAlive > (double)num)
+                    {
+                        num = timeAlive;
+                        newTarget = gameObjectsWithTag[index];
+                    }
+                }
+            }
+
+            return newTarget;
+        }
+        
+        public static GameObject? GetHighestGenerationBitbite()
+        {
+            GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
+            float num = 0.0f;
+            GameObject newTarget = (GameObject) null;
+            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
+            {
+                float generation = (float) gameObjectsWithTag[index].GetComponent<BibiteGenes>().generation;
+                if ((double) generation > (double) num)
+                {
+                    num = generation;
+                    newTarget = gameObjectsWithTag[index];
+                }
+            }
+
+            return newTarget;
+        }
     }
 }
