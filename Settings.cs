@@ -21,6 +21,8 @@ namespace TwitchIntegration
         
         public float GUIHeight { get; set; } = 370f;
         
+        public float GUIWidth { get; set; } = 2f;
+        
         public float allTimeHighestGeneration { get; set; } = 0;
         
         public bool debugMode { get; set; } = false;
@@ -48,6 +50,9 @@ namespace TwitchIntegration
                 
                 writer.WritePropertyName(nameof(GUIHeight));
                 writer.WriteValue(GUIHeight);
+                
+                writer.WritePropertyName(nameof(GUIWidth));
+                writer.WriteValue(GUIWidth);
 
                 writer.WritePropertyName(nameof(allTimeHighestGeneration));
                 writer.WriteValue(allTimeHighestGeneration);

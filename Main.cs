@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.1.0", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.2.0", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -35,10 +35,14 @@ namespace TwitchIntegration
 
         public static MelonLogger.Instance? loggerInstance;
         public static bool isCinematic = false;
+        
         public static Statistics statistics = new Statistics();
         public static int tempnum = 15;
         public static int tempnum2 = 15;
 
+        public static bool isClicked = false;
+
+        public static Rect windowRect;
 
         public override void OnApplicationStart()
         {
@@ -144,7 +148,9 @@ namespace TwitchIntegration
 
         //ongui
 
-
+        
+        
+        
         public override void OnGUI()
         {
             if (showGUI)
@@ -172,12 +178,17 @@ namespace TwitchIntegration
                 // GUI.Label(new Rect(20 + xo, 200 + yo, width, 20),
                 //     "Current highest age: " + Statistics.CurrentHighestAge);
 
+                if (isClicked)
+                {
+                    Settings.Instance.GUIHeight = Screen.height - Input.mousePosition.y;
+                    Settings.Instance.GUIWidth = Input.mousePosition.x;
+                }
                 float y = Settings.Instance.GUIHeight;
-                float x = 10;
+                float x = Settings.Instance.GUIWidth;
                 int width = 200;
 
-
-                GUI.Box(new Rect(x, y, width, 215), "<color=#9046ff>Twitch Integration</color>");
+                windowRect = new Rect(x, y, width, 215);
+                GUI.Box(windowRect, "<color=#9046ff>Twitch Integration</color>");
                 GUIStyle style = new GUIStyle(GUI.skin.label);
                 style.alignment = TextAnchor.MiddleCenter;
                 x -= 8;
@@ -219,6 +230,23 @@ namespace TwitchIntegration
 
         public override void OnLateUpdate()
         {
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (Input.mousePosition.x > windowRect.xMin && Input.mousePosition.x < windowRect.xMax && Screen.height-Input.mousePosition.y > windowRect.yMin && Screen.height-Input.mousePosition.y < windowRect.yMax)
+                {
+                    isClicked = true;
+                }
+                
+                
+                
+            }
+            else if (Input.GetMouseButtonUp(0))
+            {
+                isClicked = false;
+            }
+            
+            
             if (Input.GetKeyDown(KeyCode.F2))
             {
                 // showGUI = !showGUI;
@@ -238,6 +266,7 @@ namespace TwitchIntegration
 
             if (Input.GetKeyDown(KeyCode.F4))
             {
+                Settings.Load();
             }
 
             if (Input.GetKeyDown(KeyCode.F6))
