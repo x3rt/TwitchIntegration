@@ -173,16 +173,6 @@ namespace TwitchIntegration
                 
                 
 
-                else if (command is "closest")
-                {
-                    UserControl.Instance.SelectClosestEntity();
-                }
-
-                else if (command is "random")
-                {
-                    Commands.SelectRandomEntity();
-                }
-                
                 else if (command is "select")
                 {
                     //if command is select closest
@@ -206,19 +196,18 @@ namespace TwitchIntegration
                 
                 else if (command is "cinematic" or "cin" or "cinema" or "cinema")
                 {
-                    // if no args, toggle cinematic mode
                     if (args == null)
                     {
                         Main.isCinematic = !Main.isCinematic;
                     }
                     else
                     {
-                        // if args, set cinematic mode to true or false
                         Main.isCinematic = (args[0] == "true" || args[0] == "yes" || args[0] == "y");
                     }
                 }
                 else if (command is "center")
                 {
+                    UserControl.Instance.ClearTarget();
                     Main.isCinematic = false;
                     if (Camera.main != null)
                     {
