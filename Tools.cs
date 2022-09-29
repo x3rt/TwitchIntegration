@@ -114,9 +114,6 @@ namespace TwitchIntegration
                         num = num2;
                     }
                 }
-
-                if (Settings.Instance.debugMode)
-                    Main.loggerInstance?.Msg($"Highest generation: {num}");
                 return num;
             }
             catch (Exception e)
@@ -130,7 +127,7 @@ namespace TwitchIntegration
         {
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0.0f;
-            GameObject newTarget = (GameObject)null;
+            GameObject? newTarget = null;
             for (int index = 0; index < gameObjectsWithTag.Length; ++index)
             {
                 InternalClock component = gameObjectsWithTag[index].GetComponent<InternalClock>();
@@ -152,7 +149,7 @@ namespace TwitchIntegration
         {
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0.0f;
-            GameObject newTarget = (GameObject) null;
+            GameObject? newTarget = null;
             for (int index = 0; index < gameObjectsWithTag.Length; ++index)
             {
                 float generation = (float) gameObjectsWithTag[index].GetComponent<BibiteGenes>().generation;
@@ -164,6 +161,35 @@ namespace TwitchIntegration
             }
 
             return newTarget;
+        }
+        
+        public static int GetBibiteCount()
+        {
+            return GameObject.FindGameObjectsWithTag("bibite").Length;
+        }
+
+        public static int GetHighestAge()
+        {
+            
+            GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
+            float num = 0.0f;
+            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
+            {
+                InternalClock component = gameObjectsWithTag[index].GetComponent<InternalClock>();
+                if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+                {
+                    float timeAlive = component.timeAlive;
+                    if ((double)timeAlive > (double)num)
+                    {
+                        num = timeAlive;
+                    }
+                }
+            }
+
+            return (int)num;
+            
+            
+            
         }
     }
 }

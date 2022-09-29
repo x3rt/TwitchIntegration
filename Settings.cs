@@ -19,6 +19,7 @@ namespace TwitchIntegration
         
         public string CommandPrefix { get; set; } = "!";
         
+        public float GUIHeight { get; set; } = 370f;
         
         public float allTimeHighestGeneration { get; set; } = 0;
         
@@ -44,6 +45,9 @@ namespace TwitchIntegration
                 
                 writer.WritePropertyName(nameof(CommandPrefix));
                 writer.WriteValue(CommandPrefix!);
+                
+                writer.WritePropertyName(nameof(GUIHeight));
+                writer.WriteValue(GUIHeight);
 
                 writer.WritePropertyName(nameof(allTimeHighestGeneration));
                 writer.WriteValue(allTimeHighestGeneration);

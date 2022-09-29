@@ -10,12 +10,14 @@ using MelonLoader;
 using PropertiesScripts;
 using SimulationScripts;
 using SimulationScripts.BibiteScripts;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.4", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.1.0", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -23,7 +25,7 @@ namespace TwitchIntegration
     public class Main : MelonMod
     {
         public static bool IsEnabled;
-        public static bool showGUI;
+        public static bool showGUI = true;
 
         private static object coRoutine;
         private static object CameraCoroutine;
@@ -33,6 +35,9 @@ namespace TwitchIntegration
 
         public static MelonLogger.Instance? loggerInstance;
         public static bool isCinematic = false;
+        public static Statistics statistics = new Statistics();
+        public static int tempnum = 15;
+        public static int tempnum2 = 15;
 
 
         public override void OnApplicationStart()
@@ -47,6 +52,17 @@ namespace TwitchIntegration
                     {
                         // coRoutine = MelonCoroutines.Start(HighestGeneration());
                         // LoggerInstance.Msg($"capNumber: {BibiteSpawner.capNumber}");
+                        
+                        
+
+                        if (GameObject.Find("__app")?.GetComponent<Statistics>() == null)
+                        {
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Statistics not found, creating new one");
+                            GameObject.Find("__app")?.AddComponent<Statistics>();
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Added statistics");
+                        }
                     }
 
 
@@ -81,8 +97,20 @@ namespace TwitchIntegration
                             GameObject.Find("__app")?.AddComponent<EventHandlers>();
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added event handlers");
-
                         }
+
+                        // GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
+                        // int num = 0;
+                        // foreach (GameObject ob in array3)
+                        // {
+                        //     BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
+                        //     // if no bb add it 
+                        //     if (bb == null)
+                        //     {
+                        //         LoggerInstance.Msg("Adding text");
+                        //         ob.AddComponent<BiBiteMono>();
+                        //     }
+                        // }
                     }
                     catch (Exception e)
                     {
@@ -93,8 +121,6 @@ namespace TwitchIntegration
                 }
             }).Start();
         }
-
-
 
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
@@ -116,6 +142,80 @@ namespace TwitchIntegration
             }
         }
 
+        //ongui
+
+
+        public override void OnGUI()
+        {
+            if (showGUI)
+            {
+                // int yo = 20;
+                // int xo = 0;
+                // GUI.Box(new Rect(10 + xo, 10 + yo, width, tempnum), "Twitch Integration");
+                //
+                // GUI.Label(new Rect(20 + xo, 40 + yo, width, 20), "Cinematic Camera: " +
+                //                                                  (isCinematic ? "Enabled" : "Disabled"));
+                // GUI.Label(new Rect(20 + xo, 60 + yo, width, 20),
+                //     "All Time highest generation: " + Statistics.AllTimeHighestGeneration);
+                // GUI.Label(new Rect(20 + xo, 80 + yo, width, 20),
+                //     "Session highest generation: " + Statistics.SessionHighestGeneration);
+                // GUI.Label(new Rect(20 + xo, 100 + yo, width, 20),
+                //     "Current highest generation: " + Statistics.CurrentHighestGeneration);
+                // GUI.Label(new Rect(20 + xo, 120 + yo, width, 20),
+                //     "All Time highest population: " + Statistics.AllTimeHighestPopulation);
+                // GUI.Label(new Rect(20 + xo, 140 + yo, width, 20),
+                //     "Session highest population: " + Statistics.SessionHighestPopulation);
+                // GUI.Label(new Rect(20 + xo, 160 + yo, width, 20),
+                //     "All Time highest age: " + Statistics.AllTimeHighestAge);
+                // GUI.Label(new Rect(20 + xo, 180 + yo, width, 20),
+                //     "Session highest age: " + Statistics.SessionHighestAge);
+                // GUI.Label(new Rect(20 + xo, 200 + yo, width, 20),
+                //     "Current highest age: " + Statistics.CurrentHighestAge);
+
+                float y = Settings.Instance.GUIHeight;
+                float x = 10;
+                int width = 200;
+
+
+                GUI.Box(new Rect(x, y, width, 215), "<color=#9046ff>Twitch Integration</color>");
+                GUIStyle style = new GUIStyle(GUI.skin.label);
+                style.alignment = TextAnchor.MiddleCenter;
+                x -= 8;
+                GUI.Label(new Rect(x, y, width, 50), $"<size=12><color=#23f753>by x3rt</color></size>", style);
+                x += 8;
+                y += 30;
+                x += 10;
+                GUI.Label(new Rect(x, y, width, 50), "Cinematic Camera: " + (isCinematic ? "Enabled" : "Disabled"));
+                y += 20;
+                if (Statistics.Instance != null)
+                {
+                    // Main.loggerInstance?.Msg("Statistics is not null");
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "All Time highest generation: " + Statistics.Instance.AllTimeHighestGeneration);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "Session highest generation: " + Statistics.Instance.SessionHighestGeneration);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "Highest living generation: " + Statistics.Instance.CurrentHighestGeneration);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "All Time highest population: " + Statistics.Instance.AllTimeHighestPopulation);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "Session highest population: " + Statistics.Instance.SessionHighestPopulation);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "All Time highest age: " + Statistics.Instance.AllTimeHighestAge);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "Session highest age: " + Statistics.Instance.SessionHighestAge);
+                    y += 20;
+                    GUI.Label(new Rect(x, y, width, 50),
+                        "Highest living age: " + Statistics.Instance.SessionHighestAge);
+                }
+            }
+        }
 
         public override void OnLateUpdate()
         {
@@ -142,30 +242,53 @@ namespace TwitchIntegration
 
             if (Input.GetKeyDown(KeyCode.F6))
             {
+                if (Statistics.Instance == null)
+                {
+                    LoggerInstance.Msg("was null");
+                }
+                else
+                {
+                    StatisticsData.Save();
+                }
+                // tempnum -= 1;
+                // LoggerInstance.Msg($"temp1: {tempnum}");
             }
 
             if (Input.GetKeyDown(KeyCode.F7))
             {
+                // tempnum += 1;
+                // LoggerInstance.Msg($"temp1: {tempnum}");
             }
 
             if (Input.GetKeyDown(KeyCode.F10))
             {
+                
+                // tempnum2 -= 1;
+                //
+                // LoggerInstance.Msg($"temp2: {tempnum2}");
+            }
+            
+            if (Input.GetKeyDown(KeyCode.F11))
+            {
+                // tempnum2 += 1;
+                //
+                // LoggerInstance.Msg($"temp2: {tempnum2}");
             }
         }
 
-        public override void OnGUI()
-        {
-            if (showGUI)
-            {
-                DrawMenu();
-            }
-        }
+        // public override void OnGUI()
+        // {
+        //     if (showGUI)
+        //     {
+        //         DrawMenu();
+        //     }
+        // }
 
 
         private void DrawMenu()
         {
             GUI.Box(new Rect(0, 0, 300, 500), "Twitch Integration");
-            GUI.TextField(new Rect(10, 10, 180, 20), Settings.Instance.TwitchUsername, 25);
+            GUI.Label(new Rect(0, 100, 300, 500), "TEst Integration");
         }
 
         private IEnumerator HighestGeneration()
@@ -177,7 +300,5 @@ namespace TwitchIntegration
 
             yield return new WaitForSeconds(.5f);
         }
-        
-        
     }
 }
