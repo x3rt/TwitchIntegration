@@ -68,10 +68,10 @@ witch integration and was originally created for [this twitch stream](https://ww
 
 ## Installation
 
-- Install [MelonLoader](https://github.com/LavaGang/MelonLoader/releases/tag/v0.5.3) v0.5.3 or higher
-- Get [latest release DLL](../../../releases/latest):
-  - Put `TwitchIntegration.dll` into the new `Mods` folder. **Not** in `The Bibites_Data\Mods`
-- After launching the game edit the TwitchIntegration.json [config](#Configuration) file
+- Install [MelonLoader](https://github.com/LavaGang/MelonLoader/releases/) v0.5.3 recommended
+- Download the [latest release](../../../releases/latest):
+  - Place `TwitchIntegration.dll` into the new `Mods` folder. **Not** in `The Bibites_Data\Mods`
+- After launching the game edit the TwitchIntegration.json [config](#Configuration) file and restart
 
 ## Configuration
 
