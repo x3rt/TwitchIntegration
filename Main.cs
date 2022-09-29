@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
+using System.Net.Sockets;
 using System.Runtime.Remoting.Channels;
 using System.Threading;
+using System.Threading.Tasks;
 using ManagementScripts;
 using MelonLoader;
 using PropertiesScripts;
@@ -12,7 +15,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "1.0.0", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.0.0", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -23,14 +26,18 @@ namespace TwitchIntegration
         public static bool showGUI;
 
         private static object coRoutine;
+        private static object CameraCoroutine;
+        private static object TagCoroutine;
         private static bool canRun = true;
-        private static bool isRunning = false;
-        private TimeController timeController;
+        public static bool isRunning = false;
+
+        public static MelonLogger.Instance? loggerInstance;
+        public static bool isCinematic = false;
 
 
         public override void OnApplicationStart()
         {
-            timeController = TimeController.Instance;
+            loggerInstance = LoggerInstance;
             Settings.Start();
             new Thread(() =>
             {
@@ -38,21 +45,60 @@ namespace TwitchIntegration
                 {
                     if (isRunning)
                     {
-                        coRoutine = MelonCoroutines.Start(HighestGeneration());
-                        LoggerInstance.Msg($"capNumber: {BibiteSpawner.capNumber}");
+                        // coRoutine = MelonCoroutines.Start(HighestGeneration());
+                        // LoggerInstance.Msg($"capNumber: {BibiteSpawner.capNumber}");
                     }
 
-                    LoggerInstance.Msg($"{Settings.Instance.TwitchUsername}");
-                    Settings.Load();
+
+                    try
+                    {
+                        if (GameObject.Find("__app")?.GetComponent<TwitchChat>() == null)
+                        {
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Twitch Chat not found, creating new one");
+                            GameObject.Find("__app")?.AddComponent<TwitchChat>();
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Added Twitch Chat");
+                        }
+                        else
+                        {
+
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Already running Twitch Chat");
+                        }
+
+                        if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
+                        {
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Event Handlers not found, creating new one");
+                            GameObject.Find("__app")?.AddComponent<EventHandlers>();
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Added event handlers");
+
+                        }
+                        else
+                        {
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Already running Event Handlers");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        LoggerInstance.Msg(e.Message);
+                    }
+
                     Thread.Sleep(5000);
                 }
             }).Start();
         }
 
 
+
+
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
+            if (Settings.Instance.debugMode)
+                LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
 
 
             //buildIndex 0 = Loading Screen
@@ -60,7 +106,6 @@ namespace TwitchIntegration
             //buildIndex 2 = Game
             if (buildIndex == 2)
             {
-                // new Thread(() => { CollectGameObjects(); }).Start();
                 isRunning = true;
             }
             else
@@ -74,30 +119,30 @@ namespace TwitchIntegration
         {
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                showGUI = !showGUI;
+                // showGUI = !showGUI;
             }
 
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 // There was stuff here before for testing purposes
+                TwitchChat? a = GameObject.Find("__app")?.GetComponent<TwitchChat>();
+                Object.Destroy(a);
+
+                if (a != null)
+                    a.Connect();
+                else
+                    GameObject.Find("__app")?.AddComponent<TwitchChat>();
             }
 
             if (Input.GetKeyDown(KeyCode.F4))
             {
-                // There was stuff here before for testing purposes
             }
 
             if (Input.GetKeyDown(KeyCode.F6))
             {
-                // There was stuff here before for testing purposes
             }
 
-            if (Input.GetKeyDown(KeyCode.F8))
-            {
-                // There was stuff here before for testing purposes
-            }
-
-            if (Input.GetKeyDown(KeyCode.F9))
+            if (Input.GetKeyDown(KeyCode.F7))
             {
             }
 
@@ -121,77 +166,15 @@ namespace TwitchIntegration
             GUI.TextField(new Rect(10, 10, 180, 20), Settings.Instance.TwitchUsername, 25);
         }
 
-
         private IEnumerator HighestGeneration()
         {
-            LoggerInstance.Msg("Getting highest generation");
+            if (Settings.Instance.debugMode)
+                LoggerInstance.Msg("Getting highest generation");
 
-            GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-            float num = 0f;
-            GameObject gameObject = null;
-            for (int i = 0; i < array3.Length; i++)
-            {
-                float num2 = (float)array3[i].GetComponent<BibiteGenes>().generation;
-                if (num2 > num)
-                {
-                    num = num2;
-                    gameObject = array3[i];
-                }
-            }
-
-            float? generation;
-            if (gameObject != null)
-            {
-                generation = gameObject.GetComponent<BibiteGenes>().generation;
-                LoggerInstance.Msg($"Highest generation: {generation}");
-            }
+            Tools.GetHighestGeneration();
 
             yield return new WaitForSeconds(.5f);
         }
-
-
-        // ReSharper disable UnusedMember.Local
-        private void pushAll()
-        {
-            GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-            foreach (GameObject t in array3)
-            {
-                Vector2 randomVector = new Vector2(Random.Range(-400f, 400f), Random.Range(-400f, 400f));
-                t.GetComponent<Rigidbody2D>().velocity = (10 * randomVector / Time.timeScale);
-            }
-        }
-
-        private void layAll()
-        {
-            GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-            foreach (GameObject t in array3)
-            {
-                t.GetComponent<BibiteControl>().LayEgg();
-            }
-        }
-
-
-        private void otherStuff()
-        {
-            // BibiteSpawner.UpdateCapNumber(50);
-            // LoggerInstance.Msg($"timeSlider.value: {timeController.timeSlider.value}");
-            // LoggerInstance.Msg($"timeFactor: {timeController.timeFactor}");
-            // LoggerInstance.Msg($"calc f to slider: {Mathf.Log(timeController.timeFactor, 5)}");
-            // LoggerInstance.Msg($"calc slider to f: {Mathf.Pow(5f, timeController.timeSlider.value)}");
-            // BibiteSpawner.UpdateCapNumber(100);
-
-
-            // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor + 0.1f, 5);
-            //
-            // timeController.timeSlider.value = Mathf.Log(timeController.timeFactor - 0.1f, 5);
-            //
-            //
-            //
-            //
-            // timeController.timeSlider.value = Mathf.Log(4, 5); //convert float to slider value (4 in this case)
-        }
-        // ReSharper restore UnusedMember.Local
-        
         
         
     }

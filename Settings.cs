@@ -15,7 +15,14 @@ namespace TwitchIntegration
         
         public string TwitchUsername { get; set; } = "username";
         
+        public string TwitchOAuth { get; set; } = "oauth:token";
+        
+        public string CommandPrefix { get; set; } = "!";
+        
+        
         public float allTimeHighestGeneration { get; set; } = 0;
+        
+        public bool debugMode { get; set; } = false;
 
 
 
@@ -31,9 +38,18 @@ namespace TwitchIntegration
 
                 writer.WritePropertyName(nameof(TwitchUsername));
                 writer.WriteValue(TwitchUsername!);
+                
+                writer.WritePropertyName(nameof(TwitchOAuth));
+                writer.WriteValue(TwitchOAuth!);
+                
+                writer.WritePropertyName(nameof(CommandPrefix));
+                writer.WriteValue(CommandPrefix!);
 
                 writer.WritePropertyName(nameof(allTimeHighestGeneration));
                 writer.WriteValue(allTimeHighestGeneration);
+                
+                writer.WritePropertyName(nameof(debugMode));
+                writer.WriteValue(debugMode);
                 
                 writer.WriteEndObject();
             }
