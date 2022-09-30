@@ -126,7 +126,8 @@ namespace TwitchIntegration
 
         private void OnDestroy()
         {
-            Settings.Save();
+            StatisticsData.Save();
+            Destroy(this);
         }
 
 

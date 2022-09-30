@@ -44,6 +44,8 @@ namespace TwitchIntegration
 
         public static Rect windowRect;
 
+        
+
         public override void OnApplicationStart()
         {
             loggerInstance = LoggerInstance;
@@ -132,7 +134,12 @@ namespace TwitchIntegration
             }).Start();
         }
 
-
+        public override void OnApplicationQuit()
+        {
+            Settings.Save();
+        }
+        
+        
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if (Settings.Instance.debugMode)
@@ -335,5 +342,6 @@ namespace TwitchIntegration
 
             yield return new WaitForSeconds(.5f);
         }
+        
     }
 }

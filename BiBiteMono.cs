@@ -124,6 +124,7 @@ namespace TwitchIntegration
         private void OnDestroy()
         {
             Destroy(text);
+            Destroy(this);
         }
     }
 }
