@@ -22,13 +22,19 @@ namespace TwitchIntegration
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
             foreach (GameObject t in array3)
             {
-                t.GetComponent<BibiteControl>().LayEgg();
+                if (t.TryGetComponent(out BibiteControl bc))
+                {
+                    bc.LayEgg();
+                }
             }
         }
         
         public static void lay(GameObject bibite)
         {
-            bibite.GetComponent<BibiteControl>().LayEgg();
+            if (bibite.TryGetComponent(out BibiteControl bc))
+            {
+                bc.LayEgg();
+            }
             
         }
         
@@ -37,15 +43,21 @@ namespace TwitchIntegration
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
             foreach (GameObject t in array3)
             {
-                Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
-                t.GetComponent<Rigidbody2D>().velocity = (factor * 4000 * randomVector / Time.timeScale);
+                if (t.TryGetComponent(out Rigidbody2D rb))
+                {
+                    Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
+                    rb.velocity = (factor * 4000 * randomVector / Time.timeScale);
+                }
             }
         }
         
         public static void push(GameObject entity, int factor = 10, float min = -1f, float max = 1f)
         {
-            Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
-            entity.GetComponent<Rigidbody2D>().velocity = (factor * 4000 * randomVector / Time.timeScale);
+            if (entity.TryGetComponent(out Rigidbody2D rb))
+            {
+                Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
+                rb.velocity = (factor * 4000 * randomVector / Time.timeScale);
+            }
         }
 
         public static void UpdateMaximumBiBites(int max)

@@ -26,7 +26,7 @@ namespace TwitchIntegration
 
         private void Start()
         {
-            StatisticsData.Load();
+            StatisticsData.Start();
             Load();
             Update();
         }
@@ -57,7 +57,8 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                Main.loggerInstance?.Msg("Instance is null");
+                if (Settings.Instance.debugMode)
+                    Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
 
@@ -78,7 +79,8 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                Main.loggerInstance?.Msg("Instance is null");
+                if (Settings.Instance.debugMode)
+                    Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
 
@@ -102,7 +104,8 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                Main.loggerInstance?.Msg("Instance is null");
+                if (Settings.Instance.debugMode)
+                    Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
 
@@ -130,9 +133,12 @@ namespace TwitchIntegration
         public void Load()
         {
             Instance = this;
-            Instance.AllTimeHighestPopulation = StatisticsData.Instance.AllTimeHighestPopulation;
-            Instance.AllTimeHighestGeneration = StatisticsData.Instance.AllTimeHighestGeneration;
-            Instance.AllTimeHighestAge = StatisticsData.Instance.AllTimeHighestAge;
+            if (StatisticsData.Instance != null)
+            {
+                Instance.AllTimeHighestPopulation = StatisticsData.Instance.AllTimeHighestPopulation;
+                Instance.AllTimeHighestGeneration = StatisticsData.Instance.AllTimeHighestGeneration;
+                Instance.AllTimeHighestAge = StatisticsData.Instance.AllTimeHighestAge;
+            }
         }
     }
 
@@ -140,7 +146,7 @@ namespace TwitchIntegration
     {
         private static string path = "TwitchIntegration-Data.json";
 
-        public static StatisticsData Instance { get; set; }
+        public static StatisticsData? Instance { get; set; }
 
         public int AllTimeHighestGeneration { get; set; } = 0;
         public int AllTimeHighestPopulation { get; set; } = 0;
@@ -169,13 +175,41 @@ namespace TwitchIntegration
 
             return sw.ToString();
         }
+        public static string getData()
+        {
+            var sw = new StringWriter();
+
+            using (var writer = new JsonTextWriter(sw))
+            {
+                writer.WriteStartObject();
+
+                writer.WritePropertyName("AllTimeHighestGeneration");
+                writer.WriteValue(Statistics.Instance == null ? 0 : Statistics.Instance.AllTimeHighestGeneration);
+
+                writer.WritePropertyName("AllTimeHighestPopulation");
+                writer.WriteValue(Statistics.Instance == null ? 0 : Statistics.Instance.AllTimeHighestPopulation);
+
+                writer.WritePropertyName("AllTimeHighestAge");
+                writer.WriteValue(Statistics.Instance == null ? 0 : Statistics.Instance.AllTimeHighestAge);
+
+                writer.WriteEndObject();
+            }
+
+            return sw.ToString();
+        }
 
 
         public static void Load()
         {
+            
+            if (Instance == null)
+            {
+                Start(false);
+            }
+            
             if (!File.Exists(path))
             {
-                File.WriteAllText(path, new StatisticsData().ToJson());
+                File.WriteAllText(path, Instance?.ToJson());
             }
 
             StatisticsData.Instance = JsonConvert.DeserializeObject<StatisticsData>(File.ReadAllText(path));
@@ -184,14 +218,19 @@ namespace TwitchIntegration
         public static void Save()
         {
             //save to json file
-            var json = Instance.ToJson();
+            if (Instance == null)
+            {
+                Start(false);
+            }
+            var json = getData();
             File.WriteAllText(path, json);
         }
 
-        public static void Start()
+        public static void Start(bool load = true)
         {
             Instance = new StatisticsData();
-            Load();
+            if(load)
+                Load();
         }
     }
 }

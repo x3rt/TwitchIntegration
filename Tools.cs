@@ -64,13 +64,13 @@ namespace TwitchIntegration
             }
 
             Vector3 position = Camera.main.transform.position;
-            GameObject? newTarget = (GameObject)null;
-            GameObject? _ = (GameObject)null;
+            GameObject? newTarget = null;
+            GameObject? _ = null;
             if (Bibites)
                 foreach (Transform transform in WorldObjectsSpawner.Instance.bibiteHolder.transform)
                 {
                     float sqrMagnitude = (transform.position - position).sqrMagnitude;
-                    if ((double)sqrMagnitude < (double)num)
+                    if (sqrMagnitude < (double)num)
                     {
                         num = sqrMagnitude;
                         _ = transform.gameObject;
@@ -86,7 +86,7 @@ namespace TwitchIntegration
                 foreach (Transform transform in WorldObjectsSpawner.Instance.colorKillerHolder.transform)
                 {
                     float sqrMagnitude = (transform.position - position).sqrMagnitude;
-                    if ((double)sqrMagnitude < (double)num)
+                    if (sqrMagnitude < (double)num)
                     {
                         num = sqrMagnitude;
                         _ = transform.gameObject;
@@ -107,11 +107,13 @@ namespace TwitchIntegration
                 int num = 0;
                 foreach (GameObject t in array3)
                 {
-                    BibiteGenes? a = t.GetComponent<BibiteGenes>();
-                    int num2 = (a == null ? 0 : a.generation);
-                    if (num2 > num)
+                    if (t.TryGetComponent(out BibiteGenes a))
                     {
-                        num = num2;
+                        int num2 = (a == null ? 0 : a.generation);
+                        if (num2 > num)
+                        {
+                            num = num2;
+                        }
                     }
                 }
                 return num;
@@ -122,23 +124,43 @@ namespace TwitchIntegration
 
             return 0;
         }
+        
+        public static int GetHighestAge()
+        {
+            
+            GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
+            float num = 0.0f;
+            foreach (GameObject t in gameObjectsWithTag)
+            {
+                if (!t.TryGetComponent(out InternalClock component)) continue;
+                if (component == null) continue;
+                float timeAlive = component.timeAlive;
+                if (timeAlive > (double)num)
+                {
+                    num = timeAlive;
+                }
+            }
+
+            return (int)num;
+            
+            
+            
+        }
 
         public static GameObject? GetOldestBitbite()
         {
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0.0f;
             GameObject? newTarget = null;
-            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
+            foreach (GameObject t in gameObjectsWithTag)
             {
-                InternalClock component = gameObjectsWithTag[index].GetComponent<InternalClock>();
-                if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
+                if (!t.TryGetComponent(out InternalClock component)) continue;
+                if (component == null) continue;
+                float timeAlive = component.timeAlive;
+                if (timeAlive > (double)num)
                 {
-                    float timeAlive = component.timeAlive;
-                    if ((double)timeAlive > (double)num)
-                    {
-                        num = timeAlive;
-                        newTarget = gameObjectsWithTag[index];
-                    }
+                    num = timeAlive;
+                    newTarget = t;
                 }
             }
 
@@ -150,13 +172,14 @@ namespace TwitchIntegration
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0.0f;
             GameObject? newTarget = null;
-            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
+            foreach (GameObject t in gameObjectsWithTag)
             {
-                float generation = (float) gameObjectsWithTag[index].GetComponent<BibiteGenes>().generation;
-                if ((double) generation > (double) num)
+                if (!t.TryGetComponent(out BibiteGenes component)) continue;
+                float generation = component.generation;
+                if (generation > (double) num)
                 {
                     num = generation;
-                    newTarget = gameObjectsWithTag[index];
+                    newTarget = t;
                 }
             }
 
@@ -168,28 +191,6 @@ namespace TwitchIntegration
             return GameObject.FindGameObjectsWithTag("bibite").Length;
         }
 
-        public static int GetHighestAge()
-        {
-            
-            GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
-            float num = 0.0f;
-            for (int index = 0; index < gameObjectsWithTag.Length; ++index)
-            {
-                InternalClock component = gameObjectsWithTag[index].GetComponent<InternalClock>();
-                if (!((UnityEngine.Object)component == (UnityEngine.Object)null))
-                {
-                    float timeAlive = component.timeAlive;
-                    if ((double)timeAlive > (double)num)
-                    {
-                        num = timeAlive;
-                    }
-                }
-            }
-
-            return (int)num;
-            
-            
-            
-        }
+        
     }
 }

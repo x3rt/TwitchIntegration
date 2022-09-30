@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.2.0", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.3.0", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -67,6 +67,23 @@ namespace TwitchIntegration
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added statistics");
                         }
+                        
+                        
+                        GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
+                        int num = 0;
+                        foreach (GameObject ob in array3)
+                        {
+                            BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
+                            if (bb == null)
+                            {
+                                if (Settings.Instance.debugMode)
+                                    LoggerInstance.Msg("Adding text for: " + ob.GetInstanceID());
+                                ob.AddComponent<BiBiteMono>();
+                                if (Settings.Instance.debugMode)
+                                    LoggerInstance.Msg("Added text for: " + ob.GetInstanceID());
+                                    
+                            }
+                        }
                     }
 
 
@@ -103,18 +120,7 @@ namespace TwitchIntegration
                                 LoggerInstance.Msg("Added event handlers");
                         }
 
-                        // GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-                        // int num = 0;
-                        // foreach (GameObject ob in array3)
-                        // {
-                        //     BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
-                        //     // if no bb add it 
-                        //     if (bb == null)
-                        //     {
-                        //         LoggerInstance.Msg("Adding text");
-                        //         ob.AddComponent<BiBiteMono>();
-                        //     }
-                        // }
+                       
                     }
                     catch (Exception e)
                     {
@@ -208,7 +214,7 @@ namespace TwitchIntegration
                         "Session highest generation: " + Statistics.Instance.SessionHighestGeneration);
                     y += 20;
                     GUI.Label(new Rect(x, y, width, 50),
-                        "Highest living generation: " + Statistics.Instance.CurrentHighestGeneration);
+                        "Current highest generation: " + Statistics.Instance.CurrentHighestGeneration);
                     y += 20;
                     GUI.Label(new Rect(x, y, width, 50),
                         "All Time highest population: " + Statistics.Instance.AllTimeHighestPopulation);
@@ -223,7 +229,7 @@ namespace TwitchIntegration
                         "Session highest age: " + Statistics.Instance.SessionHighestAge);
                     y += 20;
                     GUI.Label(new Rect(x, y, width, 50),
-                        "Highest living age: " + Statistics.Instance.SessionHighestAge);
+                        "Current highest age: " + Statistics.Instance.CurrentHighestAge);
                 }
             }
         }
