@@ -47,7 +47,7 @@ namespace TwitchIntegration
 
             if ((DateTime.Now - lastSave).TotalSeconds > 60)
             {
-                Settings.Save();
+                StatisticsData.Save();
                 lastSave = DateTime.Now;
             }
         }
