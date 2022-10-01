@@ -100,18 +100,6 @@ namespace TwitchIntegration
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added Twitch Chat");
                         }
-                        else
-                        {
-                            //if no message for 7 minutes
-                            if (DateTime.Now.Subtract(a.lastMessageTime).TotalMinutes > 7)
-                            {
-                                if (Settings.Instance.debugMode)
-                                    LoggerInstance.Msg("no message for 7 minutes, destroying");
-                                Object.Destroy(a);
-                                Thread.Sleep(1000);
-                                GameObject.Find("__app")?.AddComponent<TwitchChat>();
-                            }
-                        }
 
                         if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
                         {
