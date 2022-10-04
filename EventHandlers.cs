@@ -1,20 +1,92 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using ManagementScripts;
 
 
 namespace TwitchIntegration
 {
-
     public class EventHandlers : MonoBehaviour
     {
+        private int xCam = 0;
+
+
         private void Awake()
         {
         }
 
+
+        private IEnumerator CameraCoroutine()
+        {
+            for (;;)
+            {
+                yield return new WaitForSecondsRealtime(1f);
+
+
+                if (Main.isRunning)
+                {
+                    if (Main.isCinematic)
+                    {
+                        if (Main.cinematicTime > 0)
+                        {
+                            xCam++;
+                            if (xCam >= Main.cinematicTime)
+                            {
+                                var a = Tools.GetRandomEntity(notThis: UserControl.Instance.target);
+                                if (a == null) yield break;
+                                UserControl.Instance.SelectTarget(a);
+
+                                xCam = 0;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private IEnumerator BibiteCoroutine()
+        {
+            GameObject? ob;
+            for (;;)
+            {
+                yield return new WaitForSecondsRealtime(3f);
+                if (!Main.isRunning) continue;
+                foreach (Transform transform1 in WorldObjectsSpawner.Instance.bibiteHolder.transform)
+                {
+                    ob = transform1.gameObject;
+                    if (ob.tag != "bibite")
+                        continue;
+                    BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
+                    if (bb == null)
+                    {
+                        _ = ob.AddComponent(typeof(BiBiteMono));
+
+                    }
+
+
+
+
+                }
+            }
+        }
+
+
+        private void Start()
+        {
+            Main.loggerInstance?.Msg("EventHandlers Started");
+            StartCoroutine(CameraCoroutine());
+            StartCoroutine(BibiteCoroutine());
+        }
+
         private void OnDestroy()
         {
+            Main.loggerInstance?.Msg("Destroying EventHandlers");
+            StopCoroutine(CameraCoroutine());
+            StopCoroutine(BibiteCoroutine());
         }
+
 
         private void Update()
         {
@@ -30,8 +102,6 @@ namespace TwitchIntegration
                 var a = Tools.GetClosestEntity();
                 if (a == null) return;
                 UserControl.Instance.SelectTarget(a);
-
-
             }
             catch (Exception e)
             {
@@ -39,5 +109,4 @@ namespace TwitchIntegration
             }
         }
     }
-
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Net.Sockets;
 using System.IO;
 using ManagementScripts;
@@ -31,6 +32,8 @@ namespace TwitchIntegration
             Connect();
         }
 
+        
+
         void Update()
         {
             if (!twitchClient.Connected)
@@ -39,6 +42,7 @@ namespace TwitchIntegration
             }
 
             ReadChat();
+            //run this once per second
         }
 
         private void OnDestroy()
@@ -175,6 +179,17 @@ namespace TwitchIntegration
                     if (args?[0] != null)
                         Commands.UpdateMaximumBiBites(Tools.MinMaxDefault<int>(int.Parse(args[0]), 1, 1000));
                 }
+                
+                else if (command is "setinterval")
+                {
+                    if (args?[0] != null)
+                    {
+                        if (args[0] == "off")
+                            args[0] = "0";
+                        Main.cinematicTime = Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 86400);
+                    }
+                        
+                }
 
 
                 else if (command is "select")
@@ -280,6 +295,8 @@ namespace TwitchIntegration
             await writer.WriteLineAsync($"PRIVMSG #{channelName} :{message}");
             await writer.FlushAsync();
         }
+        
+        
     }
 
     public class Tags

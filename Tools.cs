@@ -47,7 +47,6 @@ namespace TwitchIntegration
 
         public static List<T> Splice<T>(this List<T> source, int index, int count)
         {
-            Main.loggerInstance?.Msg("Splicing list");
             var items = source.GetRange(index, count);
             source.RemoveRange(index, count);
             return items;
@@ -66,35 +65,48 @@ namespace TwitchIntegration
             Vector3 position = Camera.main.transform.position;
             GameObject? newTarget = null;
             GameObject? _ = null;
-            if (Bibites)
-                foreach (Transform transform in WorldObjectsSpawner.Instance.bibiteHolder.transform)
+            foreach (Transform transform in WorldObjectsSpawner.Instance.bibiteHolder.transform)
+            {
+                float sqrMagnitude = (transform.position - position).sqrMagnitude;
+                if (sqrMagnitude < (double)num)
                 {
-                    float sqrMagnitude = (transform.position - position).sqrMagnitude;
-                    if (sqrMagnitude < (double)num)
-                    {
-                        num = sqrMagnitude;
-                        _ = transform.gameObject;
+                    num = sqrMagnitude;
+                    _ = transform.gameObject;
 
-                        if (_ == notThis)
-                            continue;
 
-                        newTarget = _;
-                    }
+                    if (_.tag == "bibite" && !Bibites)
+                        continue;
+                    if (_.tag == "egg" && !Eggs)
+                        continue;
+
+                    if (_ == notThis)
+                        continue;
+
+                    newTarget = _;
                 }
+            }
 
-            if (Eggs)
-                foreach (Transform transform in WorldObjectsSpawner.Instance.colorKillerHolder.transform)
-                {
-                    float sqrMagnitude = (transform.position - position).sqrMagnitude;
-                    if (sqrMagnitude < (double)num)
-                    {
-                        num = sqrMagnitude;
-                        _ = transform.gameObject;
-                        if (_ == notThis)
-                            continue;
-                        newTarget = _;
-                    }
-                }
+            return newTarget;
+        }
+
+        public static GameObject? GetRandomEntity(bool Bibites = true, bool Eggs = false, GameObject? notThis = null)
+        {
+            GameObject? newTarget = null;
+            GameObject? _ = null;
+            foreach (Transform transform in WorldObjectsSpawner.Instance.bibiteHolder.transform)
+            {
+                _ = transform.gameObject;
+
+                if (_.tag == "bibite" && !Bibites)
+                    continue;
+                if (_.tag == "egg" && !Eggs)
+                    continue;
+                if (_ == notThis)
+                    continue;
+
+                newTarget = _;
+            }
+
 
             return newTarget;
         }
@@ -116,6 +128,7 @@ namespace TwitchIntegration
                         }
                     }
                 }
+
                 return num;
             }
             catch (Exception e)
@@ -124,10 +137,9 @@ namespace TwitchIntegration
 
             return 0;
         }
-        
+
         public static int GetHighestAge()
         {
-            
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             float num = 0.0f;
             foreach (GameObject t in gameObjectsWithTag)
@@ -142,9 +154,6 @@ namespace TwitchIntegration
             }
 
             return (int)num;
-            
-            
-            
         }
 
         public static GameObject? GetOldestBitbite()
@@ -166,7 +175,7 @@ namespace TwitchIntegration
 
             return newTarget;
         }
-        
+
         public static GameObject? GetHighestGenerationBitbite()
         {
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
@@ -176,7 +185,7 @@ namespace TwitchIntegration
             {
                 if (!t.TryGetComponent(out BibiteGenes component)) continue;
                 float generation = component.generation;
-                if (generation > (double) num)
+                if (generation > (double)num)
                 {
                     num = generation;
                     newTarget = t;
@@ -185,12 +194,10 @@ namespace TwitchIntegration
 
             return newTarget;
         }
-        
+
         public static int GetBibiteCount()
         {
             return GameObject.FindGameObjectsWithTag("bibite").Length;
         }
-
-        
     }
 }

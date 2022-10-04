@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.3.0", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.3.1", "x3rt")]
 
 
 namespace TwitchIntegration
@@ -35,7 +35,8 @@ namespace TwitchIntegration
 
         public static MelonLogger.Instance? loggerInstance;
         public static bool isCinematic = false;
-        
+        public static int cinematicTime = 0;
+
         public static Statistics statistics = new Statistics();
         public static int tempnum = 15;
         public static int tempnum2 = 15;
@@ -44,7 +45,6 @@ namespace TwitchIntegration
 
         public static Rect windowRect;
 
-        
 
         public override void OnApplicationStart()
         {
@@ -58,34 +58,42 @@ namespace TwitchIntegration
                     {
                         // coRoutine = MelonCoroutines.Start(HighestGeneration());
                         // LoggerInstance.Msg($"capNumber: {BibiteSpawner.capNumber}");
-                        
-                        
+
 
                         if (GameObject.Find("__app")?.GetComponent<Statistics>() == null)
                         {
                             if (Settings.Instance.debugMode)
-                                LoggerInstance.Msg("Statistics not found, creating new one");
+                                LoggerInstance.Msg("Statistics not found");
                             GameObject.Find("__app")?.AddComponent<Statistics>();
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added statistics");
                         }
                         
                         
-                        GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
-                        int num = 0;
-                        foreach (GameObject ob in array3)
+
+                        if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
                         {
-                            BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
-                            if (bb == null)
-                            {
-                                if (Settings.Instance.debugMode)
-                                    LoggerInstance.Msg("Adding text for: " + ob.GetInstanceID());
-                                ob.AddComponent<BiBiteMono>();
-                                if (Settings.Instance.debugMode)
-                                    LoggerInstance.Msg("Added text for: " + ob.GetInstanceID());
-                                    
-                            }
+                            if (Settings.Instance.debugMode)
+                                LoggerInstance.Msg("Event Handlers not found");
+                            GameObject.Find("__app")?.AddComponent<EventHandlers>();
                         }
+
+
+                        // GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
+                        // int num = 0;
+                        // foreach (GameObject ob in array3)
+                        // {
+                        //     BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
+                        //     if (bb == null)
+                        //     {
+                        //         if (Settings.Instance.debugMode)
+                        //             LoggerInstance.Msg("Adding text for: " + ob.GetInstanceID());
+                        //         _ = ob.AddComponent(typeof(BiBiteMono));
+                        //         if (Settings.Instance.debugMode)
+                        //             LoggerInstance.Msg("After AddComponent for: " + ob.GetInstanceID());
+                        //             
+                        //     }
+                        // }
                     }
 
 
@@ -100,17 +108,6 @@ namespace TwitchIntegration
                             if (Settings.Instance.debugMode)
                                 LoggerInstance.Msg("Added Twitch Chat");
                         }
-
-                        if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
-                        {
-                            if (Settings.Instance.debugMode)
-                                LoggerInstance.Msg("Event Handlers not found, creating new one");
-                            GameObject.Find("__app")?.AddComponent<EventHandlers>();
-                            if (Settings.Instance.debugMode)
-                                LoggerInstance.Msg("Added event handlers");
-                        }
-
-                       
                     }
                     catch (Exception e)
                     {
@@ -126,8 +123,8 @@ namespace TwitchIntegration
         {
             Settings.Save();
         }
-        
-        
+
+
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
             if (Settings.Instance.debugMode)
@@ -149,9 +146,7 @@ namespace TwitchIntegration
 
         //ongui
 
-        
-        
-        
+
         public override void OnGUI()
         {
             if (showGUI)
@@ -184,6 +179,7 @@ namespace TwitchIntegration
                     Settings.Instance.GUIHeight = Screen.height - Input.mousePosition.y;
                     Settings.Instance.GUIWidth = Input.mousePosition.x;
                 }
+
                 float y = Settings.Instance.GUIHeight;
                 float x = Settings.Instance.GUIWidth;
                 int width = 200;
@@ -231,23 +227,21 @@ namespace TwitchIntegration
 
         public override void OnLateUpdate()
         {
-
             if (Input.GetMouseButtonDown(0))
             {
-                if (Input.mousePosition.x > windowRect.xMin && Input.mousePosition.x < windowRect.xMax && Screen.height-Input.mousePosition.y > windowRect.yMin && Screen.height-Input.mousePosition.y < windowRect.yMax)
+                if (Input.mousePosition.x > windowRect.xMin && Input.mousePosition.x < windowRect.xMax &&
+                    Screen.height - Input.mousePosition.y > windowRect.yMin &&
+                    Screen.height - Input.mousePosition.y < windowRect.yMax)
                 {
                     isClicked = true;
                 }
-                
-                
-                
             }
             else if (Input.GetMouseButtonUp(0))
             {
                 isClicked = false;
             }
-            
-            
+
+
             if (Input.GetKeyDown(KeyCode.F2))
             {
                 // showGUI = !showGUI;
@@ -286,18 +280,15 @@ namespace TwitchIntegration
 
             if (Input.GetKeyDown(KeyCode.F7))
             {
-                // tempnum += 1;
-                // LoggerInstance.Msg($"temp1: {tempnum}");
             }
 
             if (Input.GetKeyDown(KeyCode.F10))
             {
-                
                 // tempnum2 -= 1;
                 //
                 // LoggerInstance.Msg($"temp2: {tempnum2}");
             }
-            
+
             if (Input.GetKeyDown(KeyCode.F11))
             {
                 // tempnum2 += 1;
@@ -330,6 +321,5 @@ namespace TwitchIntegration
 
             yield return new WaitForSeconds(.5f);
         }
-        
     }
 }
