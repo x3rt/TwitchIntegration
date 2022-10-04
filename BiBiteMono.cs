@@ -113,7 +113,7 @@ namespace TwitchIntegration
             ;
             if (text == null) return;
 
-            if (textToDisplay == null || ((DateTime.Now - lastSynced).TotalSeconds > 7f && !currentlySyncing))
+            if (textToDisplay == null || ((DateTime.Now - lastSynced).TotalSeconds > 1f && !currentlySyncing))
             {
                 currentlySyncing = true;
                 lastSynced = DateTime.Now;

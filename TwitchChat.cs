@@ -180,7 +180,7 @@ namespace TwitchIntegration
                         Commands.UpdateMaximumBiBites(Tools.MinMaxDefault<int>(int.Parse(args[0]), 1, 1000));
                 }
                 
-                else if (command is "setinterval")
+                else if (command is "setinterval" or "si")
                 {
                     if (args?[0] != null)
                     {
