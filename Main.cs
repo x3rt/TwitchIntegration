@@ -35,7 +35,7 @@ namespace TwitchIntegration
 
         public static MelonLogger.Instance? loggerInstance;
         public static bool isCinematic = false;
-        public static int cinematicTime = 0;
+        public static int cinematicInterval = 0;
 
         public static Statistics statistics = new Statistics();
         public static int tempnum = 15;
@@ -77,6 +77,13 @@ namespace TwitchIntegration
                                 LoggerInstance.Msg("Event Handlers not found");
                             GameObject.Find("__app")?.AddComponent<EventHandlers>();
                         }
+                        
+                        // if (GameObject.Find("__app")?.GetComponent<x3rtGUI>() == null)
+                        // {
+                        //     if (Settings.Instance.debugMode)
+                        //         LoggerInstance.Msg("x3 GUI not found");
+                        //     GameObject.Find("__app")?.AddComponent<x3rtGUI>();
+                        // }
 
 
                         // GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
@@ -182,10 +189,12 @@ namespace TwitchIntegration
 
                 float y = Settings.Instance.GUIHeight;
                 float x = Settings.Instance.GUIWidth;
-                int width = 200;
+                int width = 210;
 
-                windowRect = new Rect(x, y, width, 215);
-                GUI.Box(windowRect, "<color=#9046ff>Twitch Integration</color>");
+
+                windowRect = new Rect(x, y, width, 235);
+                GUI.Box(windowRect, "<color=#9046ff>Twitch Integration </color>");
+                
                 GUIStyle style = new GUIStyle(GUI.skin.label);
                 style.alignment = TextAnchor.MiddleCenter;
                 x -= 8;
@@ -194,6 +203,8 @@ namespace TwitchIntegration
                 y += 30;
                 x += 10;
                 GUI.Label(new Rect(x, y, width, 50), "Cinematic Camera: " + (isCinematic ? "Enabled" : "Disabled"));
+                y += 20;
+                GUI.Label(new Rect(x, y, width, 50), "Cinematic Auto-switch: " + (cinematicInterval > 0 ? $"{cinematicInterval}s" : "Disabled"));
                 y += 20;
                 if (Statistics.Instance != null)
                 {
@@ -240,6 +251,8 @@ namespace TwitchIntegration
             {
                 isClicked = false;
             }
+            
+            
 
 
             if (Input.GetKeyDown(KeyCode.F2))
