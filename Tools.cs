@@ -199,5 +199,29 @@ namespace TwitchIntegration
         {
             return GameObject.FindGameObjectsWithTag("bibite").Length;
         }
+        
+        public static Color ColorFromHex(string hex)
+        {
+            if (hex.StartsWith("#"))
+                hex = hex.Substring(1);
+            if (hex.Length == 3)
+                hex = hex[0] + "" + hex[0] + hex[1] + "" + hex[1] + hex[2] + "" + hex[2];
+            if (hex.Length != 6)
+                throw new ArgumentException("Hex string must be 6 characters long");
+            byte r = byte.Parse(hex.Substring(0, 2), System.Globalization.NumberStyles.HexNumber);
+            byte g = byte.Parse(hex.Substring(2, 2), System.Globalization.NumberStyles.HexNumber);
+            byte b = byte.Parse(hex.Substring(4, 2), System.Globalization.NumberStyles.HexNumber);
+            return new Color32(r, g, b, 255);
+        }
+        public static Color ColorFromRGBA(int r, int g, int b, int a = 255)
+        {
+            return new Color32((byte)r, (byte)g, (byte)b, (byte)a);
+        }
+        public static Color ColorFromRGBA(int r, int g, int b, float a)
+        {
+            return new Color32((byte)r, (byte)g, (byte)b, (byte)(a * 255));
+        }
+        
+        
     }
 }
