@@ -47,16 +47,17 @@ witch integration and was originally created for [this twitch stream](https://ww
 | `ping`  | `none`       | Test wether the connection between Bibites and twitch is active |
 
 #### Moderator
-| Command     | Arguement(s)                | Description                                |
-|:------------|:----------------------------|:-------------------------------------------|
-| `lay`       | `(closest/all)`             | Make all or closest Bibite lay an egg      |
-| `launch`    | `(closest/all) (intensity)` | Launch all or closest Bibite               |
-| `select`    | `(closest/random/none)`     | Select closest or random Bibite or unfocus |
-| `setspeed`  | `<intensity>`               | Set the speed of the simulation            |
-| `setcap`    | `<amount>`                  | Set the maximum number of Bibites          |
-| `zoom`      | `(in/out/<number>)`         | Zoom in or out                             |
-| `cinematic` | `none`                      | Toggle cinematic mode                      |
-| `center`    | `none`                      | Center the camera                          |
+| Command       | Arguement(s)                | Description                                                                                      |
+|:--------------|:----------------------------|:-------------------------------------------------------------------------------------------------|
+| `lay`         | `(closest/all)`             | Make all or closest Bibite lay an egg                                                            |
+| `launch`      | `(closest/all) (intensity)` | Launch all or closest Bibite                                                                     |
+| `select`      | `(closest/random/none)`     | Select closest or random Bibite or unfocus                                                       |
+| `setspeed`    | `<intensity>`               | Set the speed of the simulation                                                                  |
+| `setcap`      | `<amount>`                  | Set the maximum number of Bibites                                                                |
+| `setinterval` | `<amount>`                  | Set the amount of seconds between automatically switching cinematic camera target (0 to disable) |
+| `zoom`        | `(in/out/<number>)`         | Zoom in or out                                                                                   |
+| `cinematic`   | `none`                      | Toggle cinematic mode                                                                            |
+| `center`      | `none`                      | Center the camera                                                                                |
 
 
 
@@ -80,4 +81,8 @@ witch integration and was originally created for [this twitch stream](https://ww
 | `TwitchUsername` | `username`    | Your twitch username                                                      |
 | `TwitchOAuth`    | `oauth:token` | Your twitch oauth token. [Generate one here](https://twitchapps.com/tmi/) |
 | `CommandPrefix`  | `!`           | Prefix for chat commands                                                  |
-| `stats`          | `none`        | Send stats in chat                                                        |
+| `GUIHeight`      | `100`         | Vertical position of GUI                                                  |
+| `GUIWidth`       | `100`         | Horizontal position of GUI                                                |
+| `TagHexColor`    | `#bdbdbd`     | Hex color of the tags                                                     |
+|
+
