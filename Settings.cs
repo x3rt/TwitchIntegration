@@ -20,8 +20,6 @@ namespace TwitchIntegration
 
         public float GUIWidth { get; set; } = 2f;
 
-        public float allTimeHighestGeneration { get; set; } = 0;
-
         public string TagHexColor { get; set; } = "#bdbdbd";
 
         public bool debugMode { get; set; } = false;
