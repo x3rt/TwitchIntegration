@@ -23,6 +23,7 @@ namespace TwitchIntegration
         public bool initialized = false;
         public bool currentlySyncing = false;
         public bool firstSetup = true;
+        private static readonly int FaceColor = Shader.PropertyToID("_FaceColor");
 
 
         public void Start()
@@ -44,7 +45,7 @@ namespace TwitchIntegration
             yield return new WaitForSecondsRealtime(0.5f);
             if (Settings.Instance.debugMode)
                 Main.loggerInstance?.Msg("Setting Up text box:" + gameObject.GetInstanceID());
-            
+
             try
             {
                 GameObject o = new GameObject();
@@ -54,29 +55,32 @@ namespace TwitchIntegration
                 text = o.AddComponent<TextMeshPro>();
                 var position = gameObject.transform.position;
                 text.transform.position = new Vector3(position.x, position.y + offset, 0);
-                text.color = Color.white;
                 text.alignment = TextAlignmentOptions.Center;
-                text.outlineWidth = 5f;
-                text.outlineColor = Color.green;
+
+                text.fontSharedMaterial = new Material(text.fontSharedMaterial);
+                text.fontSharedMaterial.SetColor(FaceColor, Tools.ColorFromHex(Settings.Instance.TagHexColor));
             }
             catch (Exception e)
             {
                 Main.loggerInstance?.Msg(e.Message);
             }
 
-            
+
             if (Settings.Instance.debugMode)
                 Main.loggerInstance?.Msg("Setting Up data:" + gameObject.GetInstanceID());
 
             gameObject.TryGetComponent(out bibiteGenes);
             if (Settings.Instance.debugMode)
-                Main.loggerInstance?.Msg($"Got BibiteGenes: {(bibiteGenes == null ? "No" : "Yes")} " + gameObject.GetInstanceID());
+                Main.loggerInstance?.Msg($"Got BibiteGenes: {(bibiteGenes == null ? "No" : "Yes")} " +
+                                         gameObject.GetInstanceID());
             gameObject.TryGetComponent(out bibiteBody);
             if (Settings.Instance.debugMode)
-                Main.loggerInstance?.Msg($"Got BibiteBody: {(bibiteBody == null ? "No" : "Yes") }" + gameObject.GetInstanceID());
+                Main.loggerInstance?.Msg($"Got BibiteBody: {(bibiteBody == null ? "No" : "Yes")}" +
+                                         gameObject.GetInstanceID());
             gameObject.TryGetComponent(out BibiteControl);
             if (Settings.Instance.debugMode)
-                Main.loggerInstance?.Msg($"Got BibiteControl: {(BibiteControl  == null ? "No" : "Yes") }" + gameObject.GetInstanceID());
+                Main.loggerInstance?.Msg($"Got BibiteControl: {(BibiteControl == null ? "No" : "Yes")}" +
+                                         gameObject.GetInstanceID());
 
             if (bibiteGenes != null && bibiteBody != null && BibiteControl != null)
             {
@@ -92,18 +96,22 @@ namespace TwitchIntegration
         {
             if (firstSetup) return;
             if (!initialized)
-            {if (Settings.Instance.debugMode)
+            {
+                if (Settings.Instance.debugMode)
                     Main.loggerInstance?.Msg($"u22 {gameObject.tag} " + gameObject.GetInstanceID());
                 gameObject.TryGetComponent(out bibiteGenes);
                 if (Settings.Instance.debugMode)
-                    Main.loggerInstance?.Msg($"u22Got BibiteGenes: {(bibiteGenes == null ? "No" : "Yes")} " + gameObject.GetInstanceID());
+                    Main.loggerInstance?.Msg($"u22Got BibiteGenes: {(bibiteGenes == null ? "No" : "Yes")} " +
+                                             gameObject.GetInstanceID());
                 gameObject.TryGetComponent(out bibiteBody);
                 if (Settings.Instance.debugMode)
-                    Main.loggerInstance?.Msg($"u22Got BibiteBody: {(bibiteBody == null ? "No" : "Yes") }" + gameObject.GetInstanceID());
+                    Main.loggerInstance?.Msg($"u22Got BibiteBody: {(bibiteBody == null ? "No" : "Yes")}" +
+                                             gameObject.GetInstanceID());
                 gameObject.TryGetComponent(out BibiteControl);
                 if (Settings.Instance.debugMode)
-                    Main.loggerInstance?.Msg($"u22Got BibiteControl: ${(BibiteControl  == null ? "No" : "Yes") }" + gameObject.GetInstanceID());
-                
+                    Main.loggerInstance?.Msg($"u22Got BibiteControl: ${(BibiteControl == null ? "No" : "Yes")}" +
+                                             gameObject.GetInstanceID());
+
                 if (bibiteGenes != null && bibiteBody != null && BibiteControl != null)
                 {
                     initialized = true;
@@ -124,25 +132,25 @@ namespace TwitchIntegration
                 if (Settings.Instance.debugMode)
                     Main.loggerInstance?.Msg($"Got offset: {offset} for: " + gameObject.GetInstanceID());
                 textToDisplay = bibiteGenes!.speciesTag;
-                
+
                 // if (Settings.Instance.debugMode)
                 //     if (textToDisplay == "")
                 //         textToDisplay = "Tagless";
-                
-                
+
+
+                text.fontSharedMaterial.SetColor(FaceColor, Tools.ColorFromHex(Settings.Instance.TagHexColor));
                 if (Settings.Instance.debugMode)
                     Main.loggerInstance?.Msg($"Got text: {textToDisplay} for: " + gameObject.GetInstanceID());
                 currentlySyncing = false;
             }
 
             Vector3 position = gameObject.transform.position;
-            text.transform.position = new Vector3(position.x, position.y + offset, 0);
+            text.transform.position = new Vector3(position.x, position.y + offset * -1, 0);
             text.text = textToDisplay;
         }
 
         private void OnDestroy()
         {
-            
             StopCoroutine(Setup());
             Destroy(text);
             Destroy(this);
