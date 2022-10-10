@@ -186,7 +186,7 @@ namespace TwitchIntegration
                     {
                         if (args[0] == "off")
                             args[0] = "0";
-                        Main.cinematicTime = Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 86400);
+                        Main.cinematicInterval = Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 86400);
                     }
                         
                 }

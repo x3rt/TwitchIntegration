@@ -28,10 +28,10 @@ namespace TwitchIntegration
                 {
                     if (Main.isCinematic)
                     {
-                        if (Main.cinematicTime > 0)
+                        if (Main.cinematicInterval > 0)
                         {
                             xCam++;
-                            if (xCam >= Main.cinematicTime)
+                            if (xCam >= Main.cinematicInterval)
                             {
                                 var a = Tools.GetRandomEntity(notThis: UserControl.Instance.target);
                                 if (a == null) yield break;
