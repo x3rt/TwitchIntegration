@@ -32,7 +32,6 @@ namespace TwitchIntegration
             Connect();
         }
 
-        
 
         void Update()
         {
@@ -110,7 +109,7 @@ namespace TwitchIntegration
                         {
                             args = splitMessage.Skip(1).ToList();
                         }
-                        
+
                         HandleCommand(command, args, parsedMessage);
                     }
 
@@ -156,25 +155,23 @@ namespace TwitchIntegration
                 {
                     if (args?.ElementAtOrDefault(0) == "all")
                     {
-                        response = Commands.pushAll(Tools.MinMaxDefault<int>(int.Parse(args.ElementAtOrDefault(1) ?? "10"), 1,
+                        response = Commands.pushAll(Tools.MinMaxDefault<int>(
+                            int.Parse(args.ElementAtOrDefault(1) ?? "10"), 1,
                             1000));
                     }
                     else
                     {
                         GameObject? a = Tools.GetClosestEntity();
                         if (a == null) return;
-                        response = Commands.push(a, Tools.MinMaxDefault<int>(int.Parse(args?.ElementAtOrDefault(1) ?? "10"), 1,
+                        response = Commands.push(a, Tools.MinMaxDefault<int>(
+                            int.Parse(args?.ElementAtOrDefault(1) ?? "10"), 1,
                             1000));
                     }
                 }
-                
+
                 else if (command is "settag" or "tag")
                 {
-                    if (args?[0] != null)
-                    {
-                        response = Commands.SetTag(args[0]);
-                    }
-                    
+                    response = Commands.SetTag(args?[0] == null ? "" : args[0]);
                 }
 
 
@@ -194,7 +191,7 @@ namespace TwitchIntegration
                     if (args?[0] != null)
                         response = Commands.UpdateBibiteLimit(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
                 }
-                
+
                 else if (command is "setinterval" or "si")
                 {
                     if (args?[0] != null)
@@ -202,9 +199,10 @@ namespace TwitchIntegration
                         if (args[0] == "off")
                             args[0] = "0";
                         Main.cinematicInterval = Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 86400);
-                        response = (Main.cinematicInterval > 0 ? $"Will automatically switch between targets every {Main.cinematicInterval} seconds" : "Will not automatically switch between targets");
+                        response = (Main.cinematicInterval > 0
+                            ? $"Will automatically switch between targets every {Main.cinematicInterval} seconds"
+                            : "Will not automatically switch between targets");
                     }
-                        
                 }
 
 
@@ -250,6 +248,7 @@ namespace TwitchIntegration
                     {
                         Main.isCinematic = (args[0] == "true" || args[0] == "yes" || args[0] == "y");
                     }
+
                     response = $"Cinematic mode is now {(Main.isCinematic ? "on" : "off")}";
                 }
                 else if (command is "center")
@@ -290,8 +289,6 @@ namespace TwitchIntegration
             }
 
 
-            
-            
             if (command is "ping")
             {
                 response = "Hi CoolCat";
@@ -301,7 +298,7 @@ namespace TwitchIntegration
             {
                 response = ($"Highest current Generation: {Tools.GetHighestGeneration()}");
             }
-            
+
             if (response != null)
             {
                 SendChat(response);
@@ -317,8 +314,6 @@ namespace TwitchIntegration
             await writer.WriteLineAsync($"PRIVMSG #{channelName} :{message}");
             await writer.FlushAsync();
         }
-        
-        
     }
 
     public class Tags
@@ -586,7 +581,6 @@ namespace TwitchIntegration
                         Main.loggerInstance?.Msg($"Full message: {rawCommandComponent}");
                         // return parseCommand(rawCommandComponent.Replace(commandParts[2],
                         //     commandParts[2].Replace("PONG","")));
-
                     }
 
                     return null;
