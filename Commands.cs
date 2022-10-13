@@ -140,7 +140,7 @@ namespace TwitchIntegration
             if (a != null && a.TryGetComponent(out BibiteGenes bibiteGenes))
             {
                 bibiteGenes.speciesTag = s;
-                return $"Set tag to {s}";
+                return s.Length == 0 ? "Removed tag" : $"Set tag to {s}";
             }
             return "Failed to set tag";
         }
