@@ -88,7 +88,7 @@ namespace TwitchIntegration
         public static string? SetSpeed(float speed)
         {
             TimeController.Instance.timeSlider.value = Tools.FactorToSlider(speed);
-            return $"Simulation speed is now set to {speed}";
+            return $"Simulation speed is now set to {Tools.SliderToFactor(TimeController.Instance.timeSlider.value)}";
         }
 
         public static string? SelectRandomEntity()

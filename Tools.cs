@@ -8,7 +8,7 @@ namespace TwitchIntegration
 {
     public static class Tools
     {
-        public static float SliderToFactor(int sliderValue)
+        public static float SliderToFactor(float sliderValue)
         {
             return Mathf.Pow(5f, sliderValue);
         }
