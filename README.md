@@ -56,6 +56,7 @@ witch integration and was originally created for [this twitch stream](https://ww
 | `setcap`      | `<amount>`                  | Set the Bibite cap \[Prevents "virgin" eggs\] (0 to disable)                                     |
 | `setlimit`    | `<amount>`                  | Set the Bibite limit \[Prevents eggs from being laid\] (0 to disable)                            |
 | `setinterval` | `<amount>`                  | Set the amount of seconds between automatically switching cinematic camera target (0 to disable) |
+| `settag`      | `<text>`                    | Set the tag of the closest Bibite                                                                |
 | `zoom`        | `(in/out/<number>)`         | Zoom in or out                                                                                   |
 | `cinematic`   | `none`                      | Toggle cinematic mode                                                                            |
 | `center`      | `none`                      | Center the camera                                                                                |
