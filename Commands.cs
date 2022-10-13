@@ -133,5 +133,16 @@ namespace TwitchIntegration
 
             return null;
         }
+
+        public static string? SetTag(string s)
+        {
+            var a = Tools.GetClosestEntity();
+            if (a != null && a.TryGetComponent(out BibiteGenes bibiteGenes))
+            {
+                bibiteGenes.speciesTag = s;
+                return $"Set tag to {s}";
+            }
+            return "Failed to set tag";
+        }
     }
 }

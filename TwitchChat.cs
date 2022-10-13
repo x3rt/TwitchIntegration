@@ -167,6 +167,15 @@ namespace TwitchIntegration
                             1000));
                     }
                 }
+                
+                else if (command is "settag" or "tag")
+                {
+                    if (args?[0] != null)
+                    {
+                        response = Commands.SetTag(args[0]);
+                    }
+                    
+                }
 
 
                 else if (command is "setspeed" or "speed")
@@ -193,6 +202,7 @@ namespace TwitchIntegration
                         if (args[0] == "off")
                             args[0] = "0";
                         Main.cinematicInterval = Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 86400);
+                        response = (Main.cinematicInterval > 0 ? $"Will automatically switch between targets every {Main.cinematicInterval} seconds" : "Will not automatically switch between targets");
                     }
                         
                 }
