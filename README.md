@@ -50,10 +50,11 @@ witch integration and was originally created for [this twitch stream](https://ww
 | Command       | Arguement(s)                | Description                                                                                      |
 |:--------------|:----------------------------|:-------------------------------------------------------------------------------------------------|
 | `lay`         | `(closest/all)`             | Make all or closest Bibite lay an egg                                                            |
-| `launch`      | `(closest/all) (intensity)` | Launch all or closest Bibite                                                                     |
+| `launch`      | `(closest/all) <intensity>` | Launch all or closest Bibite                                                                     |
 | `select`      | `(closest/random/none)`     | Select closest or random Bibite or unfocus                                                       |
 | `setspeed`    | `<intensity>`               | Set the speed of the simulation                                                                  |
-| `setcap`      | `<amount>`                  | Set the maximum number of Bibites                                                                |
+| `setcap`      | `<amount>`                  | Set the Bibite cap \[Prevents "virgin" eggs\] (0 to disable)                                     |
+| `setlimit`    | `<amount>`                  | Set the Bibite limit \[Prevents eggs from being laid\] (0 to disable)                            |
 | `setinterval` | `<amount>`                  | Set the amount of seconds between automatically switching cinematic camera target (0 to disable) |
 | `zoom`        | `(in/out/<number>)`         | Zoom in or out                                                                                   |
 | `cinematic`   | `none`                      | Toggle cinematic mode                                                                            |
