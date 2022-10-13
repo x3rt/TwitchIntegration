@@ -127,12 +127,13 @@ namespace TwitchIntegration
 
         private void HandleCommand(string command, List<string>? args, ParsedMessage parsedMessage)
         {
+            string? response = null;
             if (parsedMessage.tags?.broadcaster ?? false)
             {
                 if (command == "reload")
                 {
                     SendMessage("Reloading Config");
-                    Commands.ReloadSettings();
+                    response = Commands.ReloadSettings();
                 }
             }
 
@@ -142,27 +143,27 @@ namespace TwitchIntegration
                 {
                     if (args?.ElementAtOrDefault(0) == "all")
                     {
-                        Commands.layAll();
+                        response = Commands.layAll();
                     }
                     else
                     {
                         GameObject? t = Tools.GetClosestEntity();
                         if (t != null)
-                            Commands.lay(t);
+                            response = Commands.lay(t);
                     }
                 }
                 else if (command is "push" or "move" or "launch")
                 {
                     if (args?.ElementAtOrDefault(0) == "all")
                     {
-                        Commands.pushAll(Tools.MinMaxDefault<int>(int.Parse(args.ElementAtOrDefault(1) ?? "10"), 1,
+                        response = Commands.pushAll(Tools.MinMaxDefault<int>(int.Parse(args.ElementAtOrDefault(1) ?? "10"), 1,
                             1000));
                     }
                     else
                     {
                         GameObject? a = Tools.GetClosestEntity();
                         if (a == null) return;
-                        Commands.push(a, Tools.MinMaxDefault<int>(int.Parse(args?.ElementAtOrDefault(1) ?? "10"), 1,
+                        response = Commands.push(a, Tools.MinMaxDefault<int>(int.Parse(args?.ElementAtOrDefault(1) ?? "10"), 1,
                             1000));
                     }
                 }
@@ -171,18 +172,18 @@ namespace TwitchIntegration
                 else if (command is "setspeed" or "speed")
                 {
                     if (args?[0] != null)
-                        Commands.SetSpeed(Tools.MinMaxDefault<float>(float.Parse(args[0]), 0.01f, 50f));
+                        response = Commands.SetSpeed(Tools.MinMaxDefault<float>(float.Parse(args[0]), 0.01f, 50f));
                 }
 
                 else if (command is "setcap")
                 {
                     if (args?[0] != null)
-                        Commands.UpdateBibiteCap(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
+                        response = Commands.UpdateBibiteCap(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
                 }
                 else if (command is "setlimit")
                 {
                     if (args?[0] != null)
-                        Commands.UpdateBibiteLimit(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
+                        response = Commands.UpdateBibiteLimit(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
                 }
                 
                 else if (command is "setinterval" or "si")
@@ -207,7 +208,7 @@ namespace TwitchIntegration
                     //if command is select random
                     else if (args?[0] == "random")
                     {
-                        Commands.SelectRandomEntity();
+                        response = Commands.SelectRandomEntity();
                     }
                     else if (args?[0] == "none")
                     {
@@ -239,6 +240,7 @@ namespace TwitchIntegration
                     {
                         Main.isCinematic = (args[0] == "true" || args[0] == "yes" || args[0] == "y");
                     }
+                    response = $"Cinematic mode is now {(Main.isCinematic ? "on" : "off")}";
                 }
                 else if (command is "center")
                 {
@@ -255,23 +257,23 @@ namespace TwitchIntegration
                 {
                     if (args == null)
                     {
-                        Commands.ZoomIn();
+                        response = Commands.ZoomIn();
                     }
                     else
                     {
                         switch (args[0])
                         {
                             case "in":
-                                Commands.ZoomIn();
+                                response = Commands.ZoomIn();
                                 break;
                             case "out":
-                                Commands.ZoomOut();
+                                response = Commands.ZoomOut();
                                 break;
                         }
 
                         if (float.TryParse(args[0], out float zoom))
                         {
-                            Commands.Zoom(Tools.MinMaxDefault(zoom, -8f, 8f));
+                            response = Commands.Zoom(Tools.MinMaxDefault(zoom, -8f, 8f));
                         }
                     }
                 }
@@ -282,12 +284,17 @@ namespace TwitchIntegration
             
             if (command is "ping")
             {
-                SendChat("Hi CoolCat");
+                response = "Hi CoolCat";
             }
 
             if (command is "stats")
             {
-                SendChat($"Highest current Generation: {Tools.GetHighestGeneration()}");
+                response = ($"Highest current Generation: {Tools.GetHighestGeneration()}");
+            }
+            
+            if (response != null)
+            {
+                SendChat(response);
             }
         }
 

@@ -8,96 +8,117 @@ namespace TwitchIntegration
 {
     public static class Commands
     {
-        public static void ReloadSettings()
+        public static string? ReloadSettings()
         {
             Main.loggerInstance?.Msg("Reloading");
             Settings.Load();
             Main.loggerInstance?.Msg("Reloaded");
+            return "Reloaded settings";
         }
 
 
-        public static void layAll()
+        public static string? layAll()
         {
+            int x = 0;
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
             foreach (GameObject t in array3)
             {
                 if (t.TryGetComponent(out BibiteControl bc))
                 {
+                    x++;
                     bc.LayEgg();
                 }
             }
+            return $"Laid {x} eggs"; 
         }
 
-        public static void lay(GameObject bibite)
+        public static string? lay(GameObject bibite)
         {
             if (bibite.TryGetComponent(out BibiteControl bc))
             {
                 bc.LayEgg();
+                return "Laid egg";
             }
+            return "Failed to lay egg";
         }
 
-        public static void pushAll(int factor = 10, float min = -1f, float max = 1f)
+        public static string? pushAll(int factor = 10, float min = -1f, float max = 1f)
         {
+            int x = 0;
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
             foreach (GameObject t in array3)
             {
                 if (t.TryGetComponent(out Rigidbody2D rb))
                 {
+                    x++;
                     Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
                     rb.velocity = (factor * 4000 * randomVector / Time.timeScale);
                 }
             }
+            return $"Pushed {x} Bibites";
         }
 
-        public static void push(GameObject entity, int factor = 10, float min = -1f, float max = 1f)
+        public static string? push(GameObject entity, int factor = 10, float min = -1f, float max = 1f)
         {
             if (entity.TryGetComponent(out Rigidbody2D rb))
             {
                 Vector2 randomVector = new Vector2(Random.Range(min, max), Random.Range(min, max));
                 rb.velocity = (factor * 4000 * randomVector / Time.timeScale);
+                return "Pushed current Bibite";
             }
+            return "Failed to push Bibite";
         }
 
-        public static void UpdateBibiteCap(int max)
+        public static string? UpdateBibiteCap(int max)
         {
-            BibiteSpawner.UpdateBibiteCap(max == 0);
+            BibiteSpawner.UpdateBibiteCap(max != 0);
             BibiteSpawner.UpdateCapNumber(max);
+            string res = (max == 0 ? "Bibite cap is now disabled" : $"Bibite cap is now set to {max}");
+            return res;
         }
 
-        public static void UpdateBibiteLimit(int max)
+        public static string? UpdateBibiteLimit(int max)
         {
-            BibiteSpawner.UpdateBibiteLimit(max == 0);
+            BibiteSpawner.UpdateBibiteLimit(max != 0);
             BibiteSpawner.UpdateLimitNumber(max);
+            string res = (max == 0 ? "Bibite limit is now disabled" : $"Bibite limit is now set to {max}");
+            return res;
         }
 
-        public static void SetSpeed(float speed)
+        public static string? SetSpeed(float speed)
         {
             TimeController.Instance.timeSlider.value = Tools.FactorToSlider(speed);
+            return $"Simulation speed is now set to {speed}";
         }
 
-        public static void SelectRandomEntity()
+        public static string? SelectRandomEntity()
         {
             GameObject[] gameObjectsWithTag = GameObject.FindGameObjectsWithTag("bibite");
             if (gameObjectsWithTag.Length != 0)
+            {
                 UserControl.Instance.SelectTarget(gameObjectsWithTag[Random.Range(0, gameObjectsWithTag.Length)]);
+
+            }
+
+            return null;
         }
 
-        public static void ZoomIn()
+        public static string? ZoomIn()
         {
-            Zoom(1);
+            return Zoom(1);
         }
 
-        public static void ZoomOut()
+        public static string? ZoomOut()
         {
-            Zoom(-1);
+            return Zoom(-1);
         }
 
-        public static void Zoom(float zoom)
+        public static string? Zoom(float zoom)
         {
             var cam = Camera.main;
             // float z = Tools.MinMaxDefault(main.position.z - zoom, 1, 100);
             // if (main != null) main.position = new Vector3(main.position.x, main.position.y, z);
-            if (cam == null) return;
+            if (cam == null) return "No camera found";
             float single = cam.orthographicSize;
             cam.orthographicSize = single - zoom * single / 10f * 1;
             if (cam.orthographicSize < 5f)
@@ -109,6 +130,8 @@ namespace TwitchIntegration
             {
                 cam.orthographicSize = 1.5f * GameSettings.Instance.SimulationSize.val;
             }
+
+            return null;
         }
     }
 }
