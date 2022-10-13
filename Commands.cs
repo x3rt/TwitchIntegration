@@ -17,7 +17,7 @@ namespace TwitchIntegration
         }
 
 
-        public static string? layAll()
+        public static string? layAll(int amount = 1)
         {
             int x = 0;
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
@@ -25,21 +25,27 @@ namespace TwitchIntegration
             {
                 if (t.TryGetComponent(out BibiteControl bc))
                 {
-                    x++;
-                    bc.LayEgg();
+                    for (int y = 0; y < amount; y++)
+                    {
+                        x++;
+                        bc.LayEgg();
+                    }
                 }
             }
             return $"Laid {x} eggs"; 
         }
 
-        public static string? lay(GameObject bibite)
+        public static string? lay(GameObject bibite, int amount = 1)
         {
             if (bibite.TryGetComponent(out BibiteControl bc))
             {
-                bc.LayEgg();
-                return "Laid egg";
+                for (int y = 0; y < amount; y++)
+                {
+                    bc.LayEgg();
+                }
+                return $"Laid {amount} eggs";
             }
-            return "Failed to lay egg";
+            return "Failed to lay eggs";
         }
 
         public static string? pushAll(int factor = 10, float min = -1f, float max = 1f)

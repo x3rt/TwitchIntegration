@@ -142,13 +142,13 @@ namespace TwitchIntegration
                 {
                     if (args?.ElementAtOrDefault(0) == "all")
                     {
-                        response = Commands.layAll();
+                        response = Commands.layAll(Tools.MinMaxDefault<int>(int.Parse(args.ElementAtOrDefault(1) ?? "1"), 1, 1000));
                     }
                     else
                     {
                         GameObject? t = Tools.GetClosestEntity();
                         if (t != null)
-                            response = Commands.lay(t);
+                            response = Commands.lay(t, Tools.MinMaxDefault<int>(int.Parse(args?.ElementAtOrDefault(1) ?? "1"), 1, 1000));
                     }
                 }
                 else if (command is "push" or "move" or "launch")
