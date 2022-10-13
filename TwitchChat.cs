@@ -171,7 +171,7 @@ namespace TwitchIntegration
 
                 else if (command is "settag" or "tag")
                 {
-                    response = Commands.SetTag(args?[0] == null ? "" : args[0]);
+                    response = Commands.SetTag(string.Join(" ", args?.Where(s => !String.IsNullOrEmpty(s)) ?? Array.Empty<string>()).Trim());
                 }
 
 
