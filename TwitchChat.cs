@@ -174,10 +174,15 @@ namespace TwitchIntegration
                         Commands.SetSpeed(Tools.MinMaxDefault<float>(float.Parse(args[0]), 0.01f, 50f));
                 }
 
-                else if (command is "setcap" or "setmax" or "maxbibites")
+                else if (command is "setcap")
                 {
                     if (args?[0] != null)
-                        Commands.UpdateMaximumBiBites(Tools.MinMaxDefault<int>(int.Parse(args[0]), 1, 1000));
+                        Commands.UpdateBibiteCap(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
+                }
+                else if (command is "setlimit")
+                {
+                    if (args?[0] != null)
+                        Commands.UpdateBibiteLimit(Tools.MinMaxDefault<int>(int.Parse(args[0]), 0, 10000));
                 }
                 
                 else if (command is "setinterval" or "si")

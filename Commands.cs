@@ -8,15 +8,14 @@ namespace TwitchIntegration
 {
     public static class Commands
     {
-
         public static void ReloadSettings()
         {
             Main.loggerInstance?.Msg("Reloading");
             Settings.Load();
             Main.loggerInstance?.Msg("Reloaded");
         }
-        
-        
+
+
         public static void layAll()
         {
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
@@ -28,16 +27,15 @@ namespace TwitchIntegration
                 }
             }
         }
-        
+
         public static void lay(GameObject bibite)
         {
             if (bibite.TryGetComponent(out BibiteControl bc))
             {
                 bc.LayEgg();
             }
-            
         }
-        
+
         public static void pushAll(int factor = 10, float min = -1f, float max = 1f)
         {
             GameObject[] array3 = GameObject.FindGameObjectsWithTag("bibite");
@@ -50,7 +48,7 @@ namespace TwitchIntegration
                 }
             }
         }
-        
+
         public static void push(GameObject entity, int factor = 10, float min = -1f, float max = 1f)
         {
             if (entity.TryGetComponent(out Rigidbody2D rb))
@@ -60,9 +58,16 @@ namespace TwitchIntegration
             }
         }
 
-        public static void UpdateMaximumBiBites(int max)
+        public static void UpdateBibiteCap(int max)
         {
+            BibiteSpawner.UpdateBibiteCap(max == 0);
             BibiteSpawner.UpdateCapNumber(max);
+        }
+
+        public static void UpdateBibiteLimit(int max)
+        {
+            BibiteSpawner.UpdateBibiteLimit(max == 0);
+            BibiteSpawner.UpdateLimitNumber(max);
         }
 
         public static void SetSpeed(float speed)
@@ -80,12 +85,11 @@ namespace TwitchIntegration
         public static void ZoomIn()
         {
             Zoom(1);
-
         }
-        
+
         public static void ZoomOut()
         {
-           Zoom(-1);
+            Zoom(-1);
         }
 
         public static void Zoom(float zoom)
@@ -100,28 +104,11 @@ namespace TwitchIntegration
             {
                 cam.orthographicSize = 5f;
             }
+
             if (cam.orthographicSize > 1.5f * GameSettings.Instance.SimulationSize.val)
             {
                 cam.orthographicSize = 1.5f * GameSettings.Instance.SimulationSize.val;
             }
-            
-            
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
 }
