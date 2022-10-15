@@ -345,6 +345,17 @@
       <Reference Include="UnityEngine.XRModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
         <HintPath>..\The Bibites 0.4.2 - Windows 64x\The Bibites_Data\Managed\UnityEngine.XRModule.dll</HintPath>
       </Reference>
+      <Reference Include="UniverseLib.Mono, Version=1.5.1.0, Culture=neutral, PublicKeyToken=null">
+        <HintPath>..\The Bibites 0.4.2 - Windows 64x\UserLibs\UniverseLib.Mono.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Config" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="x3rtGUI.cs" />
     </ItemGroup>
 
 </Project>

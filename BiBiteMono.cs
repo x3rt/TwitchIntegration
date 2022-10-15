@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections;
-using ManagementScripts;
 using SimulationScripts.BibiteScripts;
 using TMPro;
-using UIScripts;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

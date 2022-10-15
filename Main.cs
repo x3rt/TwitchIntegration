@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Net.Sockets;
-using System.Runtime.Remoting.Channels;
 using System.Threading;
-using System.Threading.Tasks;
-using ManagementScripts;
 using MelonLoader;
-using PropertiesScripts;
-using SimulationScripts;
-using SimulationScripts.BibiteScripts;
-using TMPro;
+using TwitchIntegration.Config;
+using TwitchIntegration.Loader;
+using TwitchIntegration.UI;
 using UnityEngine;
-using UnityEngine.UI;
+using UniverseLib;
+using UniverseLib.Config;
+using UniverseLib.Input;
+using ConfigManager = TwitchIntegration.Config.ConfigManager;
 using Object = UnityEngine.Object;
-using Random = UnityEngine.Random;
 
 
 [assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.4.2", "x3rt")]
@@ -22,10 +19,9 @@ using Random = UnityEngine.Random;
 
 namespace TwitchIntegration
 {
-    public class Main : MelonMod
+    public class Main : MelonMod, IExplorerLoader
     {
         public static bool IsEnabled;
-        public static bool showGUI = true;
 
         private static object coRoutine;
         private static object CameraCoroutine;
@@ -36,18 +32,17 @@ namespace TwitchIntegration
         public static MelonLogger.Instance? loggerInstance;
         public static bool isCinematic = false;
         public static int cinematicInterval = 0;
-
-        public static Statistics statistics = new Statistics();
         public static int tempnum = 15;
         public static int tempnum2 = 15;
 
-        public static bool isClicked = false;
-
         public static Rect windowRect;
+        public static IExplorerLoader Loader { get; private set; }
+        public static Main Instance { get; private set; }
 
 
         public override void OnApplicationStart()
         {
+            Instance = this;
             loggerInstance = LoggerInstance;
             Settings.Start();
             new Thread(() =>
@@ -124,6 +119,13 @@ namespace TwitchIntegration
                     Thread.Sleep(5000);
                 }
             }).Start();
+            
+            
+            _configHandler = new MelonLoaderConfigHandler();
+            Init(this);
+            Directory.CreateDirectory(ExplorerFolder);
+            Config.ConfigManager.Init(this.ConfigHandler);
+            Universe.Init(ConfigManager.Startup_Delay_Time.Value, UIManager.InitUI, Log, new UniverseLibConfig() );
         }
 
         public override void OnApplicationQuit()
@@ -151,105 +153,24 @@ namespace TwitchIntegration
             }
         }
 
-        //ongui
-
-
-        public override void OnGUI()
-        {
-            if (showGUI)
-            {
-                // int yo = 20;
-                // int xo = 0;
-                // GUI.Box(new Rect(10 + xo, 10 + yo, width, tempnum), "Twitch Integration");
-                //
-                // GUI.Label(new Rect(20 + xo, 40 + yo, width, 20), "Cinematic Camera: " +
-                //                                                  (isCinematic ? "Enabled" : "Disabled"));
-                // GUI.Label(new Rect(20 + xo, 60 + yo, width, 20),
-                //     "All Time highest generation: " + Statistics.AllTimeHighestGeneration);
-                // GUI.Label(new Rect(20 + xo, 80 + yo, width, 20),
-                //     "Session highest generation: " + Statistics.SessionHighestGeneration);
-                // GUI.Label(new Rect(20 + xo, 100 + yo, width, 20),
-                //     "Current highest generation: " + Statistics.CurrentHighestGeneration);
-                // GUI.Label(new Rect(20 + xo, 120 + yo, width, 20),
-                //     "All Time highest population: " + Statistics.AllTimeHighestPopulation);
-                // GUI.Label(new Rect(20 + xo, 140 + yo, width, 20),
-                //     "Session highest population: " + Statistics.SessionHighestPopulation);
-                // GUI.Label(new Rect(20 + xo, 160 + yo, width, 20),
-                //     "All Time highest age: " + Statistics.AllTimeHighestAge);
-                // GUI.Label(new Rect(20 + xo, 180 + yo, width, 20),
-                //     "Session highest age: " + Statistics.SessionHighestAge);
-                // GUI.Label(new Rect(20 + xo, 200 + yo, width, 20),
-                //     "Current highest age: " + Statistics.CurrentHighestAge);
-
-                if (isClicked)
-                {
-                    Settings.Instance.GUIHeight = Screen.height - Input.mousePosition.y;
-                    Settings.Instance.GUIWidth = Input.mousePosition.x;
-                }
-
-                float y = Settings.Instance.GUIHeight;
-                float x = Settings.Instance.GUIWidth;
-                int width = 210;
-
-
-                windowRect = new Rect(x, y, width, 235);
-                GUI.Box(windowRect, "<color=#9046ff>Twitch Integration </color>");
-                
-                GUIStyle style = new GUIStyle(GUI.skin.label);
-                style.alignment = TextAnchor.MiddleCenter;
-                x -= 8;
-                GUI.Label(new Rect(x, y, width, 50), $"<size=12><color=#23f753>by x3rt</color></size>", style);
-                x += 8;
-                y += 30;
-                x += 10;
-                GUI.Label(new Rect(x, y, width, 50), "Cinematic Camera: " + (isCinematic ? "Enabled" : "Disabled"));
-                y += 20;
-                GUI.Label(new Rect(x, y, width, 50), "Cinematic Auto-switch: " + (cinematicInterval > 0 ? $"{cinematicInterval}s" : "Disabled"));
-                y += 20;
-                if (Statistics.Instance != null)
-                {
-                    // Main.loggerInstance?.Msg("Statistics is not null");
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "All Time highest generation: " + Statistics.Instance.AllTimeHighestGeneration);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "Session highest generation: " + Statistics.Instance.SessionHighestGeneration);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "Current highest generation: " + Statistics.Instance.CurrentHighestGeneration);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "All Time highest population: " + Statistics.Instance.AllTimeHighestPopulation);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "Session highest population: " + Statistics.Instance.SessionHighestPopulation);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "All Time highest age: " + Statistics.Instance.AllTimeHighestAge);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "Session highest age: " + Statistics.Instance.SessionHighestAge);
-                    y += 20;
-                    GUI.Label(new Rect(x, y, width, 50),
-                        "Current highest age: " + Statistics.Instance.CurrentHighestAge);
-                }
-            }
-        }
-
         public override void OnLateUpdate()
         {
-            if (Input.GetMouseButtonDown(0))
+            
+            
+            if (InputManager.GetKeyDown(ConfigManager.Navbar_Toggle.Value))
             {
-                if (Input.mousePosition.x > windowRect.xMin && Input.mousePosition.x < windowRect.xMax &&
-                    Screen.height - Input.mousePosition.y > windowRect.yMin &&
-                    Screen.height - Input.mousePosition.y < windowRect.yMax)
-                {
-                    isClicked = true;
-                }
+                UIManager.ShowNavbar = !UIManager.ShowNavbar;
             }
-            else if (Input.GetMouseButtonUp(0))
+            
+            if (InputManager.GetKeyDown(ConfigManager.TwitchChat_Reconnect.Value))
             {
-                isClicked = false;
+                TwitchChat? a = GameObject.Find("__app")?.GetComponent<TwitchChat>();
+                Object.Destroy(a);
+
+                if (a != null)
+                    a.Connect();
+                else
+                    GameObject.Find("__app")?.AddComponent<TwitchChat>();
             }
             
             
@@ -263,30 +184,23 @@ namespace TwitchIntegration
             if (Input.GetKeyDown(KeyCode.F3))
             {
                 // There was stuff here before for testing purposes
-                TwitchChat? a = GameObject.Find("__app")?.GetComponent<TwitchChat>();
-                Object.Destroy(a);
-
-                if (a != null)
-                    a.Connect();
-                else
-                    GameObject.Find("__app")?.AddComponent<TwitchChat>();
             }
 
             if (Input.GetKeyDown(KeyCode.F4))
             {
-                Settings.Load();
+                // Settings.Load();
             }
 
             if (Input.GetKeyDown(KeyCode.F6))
             {
-                if (Statistics.Instance == null)
-                {
-                    LoggerInstance.Msg("was null");
-                }
-                else
-                {
-                    StatisticsData.Save();
-                }
+                // if (Statistics.Instance == null)
+                // {
+                //     LoggerInstance.Msg("was null");
+                // }
+                // else
+                // {
+                //     StatisticsData.Save();
+                // }
                 // tempnum -= 1;
                 // LoggerInstance.Msg($"temp1: {tempnum}");
             }
@@ -334,5 +248,73 @@ namespace TwitchIntegration
 
             yield return new WaitForSeconds(.5f);
         }
+        
+        private static void Log(object message, LogType logType)
+        {
+            string log = message?.ToString() ?? "";
+
+            // LogPanel.Log(log, logType);
+
+            switch (logType)
+            {
+                case LogType.Assert:
+                case LogType.Log:
+                    MelonLogger.Msg(log);
+                    break;
+
+                case LogType.Warning:
+                    MelonLogger.Warning(log);
+                    break;
+
+                case LogType.Error:
+                case LogType.Exception:
+                    MelonLogger.Error(log);
+                    break;
+            }
+        }
+        
+        
+        public static void Log(object message)
+            => Log(message, LogType.Log);
+
+        public static void LogWarning(object message)
+            => Log(message, LogType.Warning);
+
+        public static void LogError(object message)
+            => Log(message, LogType.Error);
+
+        public static void LogUnity(object message, LogType logType)
+        {
+            if (!ConfigManager.Log_Unity_Debug.Value)
+                return;
+
+            Log($"[Unity] {message}", logType);
+        }
+
+        public static void Init(IExplorerLoader loader)
+        {
+            if (Loader != null)
+                throw new Exception("TwitchIntegration is already loaded.");
+            
+            Loader = loader;
+            Log($"Twitch Integration {Instance.Info.Version} initializing...");
+            
+        }
+
+
+        public string ExplorerFolderName => "TwitchIntegration";
+        public string ExplorerFolderDestination => MelonHandler.ModsDirectory;
+        public static string ExplorerFolder => Path.Combine(Loader.ExplorerFolderDestination, Loader.ExplorerFolderName);
+
+        public string UnhollowedModulesFolder => Path.Combine(
+            Path.GetDirectoryName(MelonHandler.ModsDirectory),
+            Path.Combine("MelonLoader", "Managed"));
+
+        public ConfigHandler ConfigHandler => _configHandler;
+        public MelonLoaderConfigHandler _configHandler;
+
+        public Action<object> OnLogMessage => LoggerInstance.Msg;
+        public Action<object> OnLogWarning => LoggerInstance.Warning;
+        public Action<object> OnLogError   => LoggerInstance.Error;
     }
 }
