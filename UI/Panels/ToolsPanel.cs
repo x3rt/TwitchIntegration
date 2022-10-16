@@ -1,6 +1,7 @@
 ﻿using System;
 using ManagementScripts;
 using SimulationScripts;
+using TwitchIntegration.Config;
 using UnityEngine;
 using UnityEngine.UI;
 using UniverseLib.UI;
@@ -13,8 +14,8 @@ namespace TwitchIntegration.UI.Panels
     {
         public override UIManager.Panels PanelType => UIManager.Panels.Tools;
         public override string Name => "Tools";
-        public override int MinWidth => 482;
-        public override int MinHeight => 164;
+        public override int MinWidth => 491;
+        public override int MinHeight => 282;
         public override Vector2 DefaultAnchorMin => new Vector2(0.5f, 0.5f);
         public override Vector2 DefaultAnchorMax => new Vector2(0.5f, 0.5f);
         public override bool ShouldSaveActiveState => true;
@@ -30,11 +31,12 @@ namespace TwitchIntegration.UI.Panels
         private InputFieldRef CinematicInterval;
         private InputFieldRef LimitInput;
         private InputFieldRef CapInput;
+        private InputFieldRef TagChangerInput;
 
         protected override void ConstructPanelContent()
         {
-            Text cameraLabel = UIFactory.CreateLabel(ContentRoot, "CameraLabel", "Camera", TextAnchor.MiddleCenter);
-            UIFactory.SetLayoutElement(cameraLabel.gameObject, minHeight: 30, flexibleWidth: 9999);
+            // Text cameraLabel = UIFactory.CreateLabel(ContentRoot, "CameraLabel", "Camera", TextAnchor.MiddleCenter);
+            // UIFactory.SetLayoutElement(cameraLabel.gameObject, minHeight: 30, flexibleWidth: 9999, flexibleHeight:9999);
             GameObject CinematicRow = UIFactory.CreateHorizontalGroup(this.ContentRoot, "CinematicRow", false, false, true, true, 5, new Vector4(8, 8, 10, 5),
                 default, TextAnchor.MiddleLeft);
             GameObject toggleObj = UIFactory.CreateToggle(CinematicRow, "CinematicModeToggle", out CinematicToggle,
@@ -67,13 +69,13 @@ namespace TwitchIntegration.UI.Panels
             CinematicInterval.Component.textComponent.alignment = TextAnchor.MiddleCenter;
             
             
-            Text miscLabel = UIFactory.CreateLabel(ContentRoot, "MiscLabel", "Misc", TextAnchor.MiddleCenter);
-            UIFactory.SetLayoutElement(miscLabel.gameObject, minHeight: 30, flexibleWidth: 9999);
+            // Text miscLabel = UIFactory.CreateLabel(ContentRoot, "MiscLabel", "Misc", TextAnchor.MiddleCenter);
+            // UIFactory.SetLayoutElement(miscLabel.gameObject, minHeight: 30, flexibleWidth: 9999, flexibleHeight:9999);
             
             GameObject LayRow = UIFactory.CreateHorizontalGroup(this.ContentRoot, "LayRow", false, false, true, true, 5, new Vector4(8, 8, 10, 5),
                 default, TextAnchor.MiddleLeft);
             ButtonRef? LayButton = UIFactory.CreateButton(LayRow, "LayButton", "Lay");
-            UIFactory.SetLayoutElement(LayButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(LayButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             LayButton.Component.onClick.AddListener(() =>
             {
                 GameObject? t = Tools.GetClosestEntity();
@@ -81,13 +83,13 @@ namespace TwitchIntegration.UI.Panels
                     Commands.lay(t);
             });
             ButtonRef? LayAllButton = UIFactory.CreateButton(LayRow, "LayAllButton", "Lay All");
-            UIFactory.SetLayoutElement(LayAllButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(LayAllButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             LayAllButton.Component.onClick.AddListener(() =>
             {
                 Commands.layAll();
             });
             ButtonRef? LaunchButton = UIFactory.CreateButton(LayRow, "LaunchButton", "Launch");
-            UIFactory.SetLayoutElement(LaunchButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(LaunchButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             LaunchButton.Component.onClick.AddListener(() =>
             {
                 GameObject? a = Tools.GetClosestEntity();
@@ -95,7 +97,7 @@ namespace TwitchIntegration.UI.Panels
                 Commands.push(a, 10);
             });
             ButtonRef? LaunchAllButton = UIFactory.CreateButton(LayRow, "LaunchAllButton", "Launch All");
-            UIFactory.SetLayoutElement(LaunchAllButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(LaunchAllButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             LaunchAllButton.Component.onClick.AddListener(() =>
             {
                 Commands.pushAll(10);
@@ -145,6 +147,7 @@ namespace TwitchIntegration.UI.Panels
                 Commands.UpdateBibiteCap(l);
 
             }, CapLimRow);
+            CapInput.Component.textComponent.alignment = TextAnchor.MiddleCenter;
             
             // GameObject SelectColumn = UIFactory.CreateVerticalGroup(this.ContentRoot, "SelectColumn", false, false, true, true, 5, new Vector4(8, 8, 10, 5),
             //     default, TextAnchor.MiddleLeft);
@@ -155,7 +158,7 @@ namespace TwitchIntegration.UI.Panels
                 default, TextAnchor.MiddleLeft);
             // selectLabel = UIFactory.CreateLabel(ContentRoot, "SelectLabel", "Select2", TextAnchor.MiddleCenter);
             ButtonRef? SelectClosestButton = UIFactory.CreateButton(SelectRow, "SelectClosestButton", "Closest");
-            UIFactory.SetLayoutElement(SelectClosestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SelectClosestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             SelectClosestButton.Component.onClick.AddListener(() =>
             {
                 GameObject? t = Tools.GetClosestEntity();
@@ -164,14 +167,14 @@ namespace TwitchIntegration.UI.Panels
             });
             
             ButtonRef? SelectRandomButton = UIFactory.CreateButton(SelectRow, "SelectRandomButton", "Random");
-            UIFactory.SetLayoutElement(SelectRandomButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SelectRandomButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             SelectRandomButton.Component.onClick.AddListener(() =>
             {
                 Commands.SelectRandomEntity();
             });
             
             ButtonRef? SelectNoneButton = UIFactory.CreateButton(SelectRow, "SelectNoneButton", "None");
-            UIFactory.SetLayoutElement(SelectNoneButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SelectNoneButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             SelectNoneButton.Component.onClick.AddListener(() =>
             {
                 Main.isCinematic = false;
@@ -179,7 +182,7 @@ namespace TwitchIntegration.UI.Panels
             });
             
             ButtonRef? SelectOldestButton = UIFactory.CreateButton(SelectRow, "SelectOldestButton", "Oldest");
-            UIFactory.SetLayoutElement(SelectOldestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SelectOldestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             SelectOldestButton.Component.onClick.AddListener(() =>
             {
                 GameObject? a = Tools.GetOldestBitbite();
@@ -188,7 +191,7 @@ namespace TwitchIntegration.UI.Panels
             });
             
             ButtonRef? SelectHighestButton = UIFactory.CreateButton(SelectRow, "SelectHighestButton", "Highest Gen");
-            UIFactory.SetLayoutElement(SelectHighestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999);
+            UIFactory.SetLayoutElement(SelectHighestButton.Component.gameObject, minHeight: 25, minWidth: 90, flexibleWidth: 9999, flexibleHeight:9999);
             SelectHighestButton.Component.onClick.AddListener(() =>
             {
                 GameObject? a = Tools.GetHighestGenerationBitbite();
@@ -196,6 +199,15 @@ namespace TwitchIntegration.UI.Panels
                     UserControl.Instance.SelectTarget(a);
             });
             
+            GameObject TagRow = UIFactory.CreateHorizontalGroup(this.ContentRoot, "TagRow", false, false, true, true, 5, new Vector4(8, 8, 10, 5),
+                default, TextAnchor.MiddleLeft);
+            //Tag input
+            AddInputField("TagChangerInput", "Tag:", "Press Enter to set tag for current selected Bibite", out TagChangerInput, (a) =>
+            {
+                Commands.SetTag(a);
+                TagChangerInput.Text = "";
+
+            }, TagRow);
             
             
 
@@ -206,8 +218,11 @@ namespace TwitchIntegration.UI.Panels
 
         public override void OnFinishResize()
         {
-            // var rect = Rect.rect;
-            // Main.Log("Resized Tools Panel to " + rect.width + "x" + rect.height);
+            if (ConfigManager.Debug_Mode.Value)
+            {
+                var rect = Rect.rect;
+                Main.Log("Resized Tools Panel to " + rect.width + "x" + rect.height);
+            }
             base.OnFinishResize();
         }
 
@@ -269,6 +284,7 @@ namespace TwitchIntegration.UI.Panels
             GameObject row = UIFactory.CreateHorizontalGroup(root, $"{name}_Group", false, false, true, true, 3, default, new(1, 1, 1, 0));
 
             Text posLabel = UIFactory.CreateLabel(row, $"{name}_Label", labelText);
+            posLabel.alignment = TextAnchor.MiddleLeft;
             UIFactory.SetLayoutElement(posLabel.gameObject, minWidth: 100, minHeight: 25);
 
             inputField = UIFactory.CreateInputField(row, $"{name}_Input", placeHolder);
