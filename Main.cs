@@ -14,7 +14,7 @@ using ConfigManager = TwitchIntegration.Config.ConfigManager;
 using Object = UnityEngine.Object;
 
 
-[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "2.4.2", "x3rt")]
+[assembly: MelonInfo(typeof(TwitchIntegration.Main), "Twitch Integration", "3.0.0", "x3rt")]
 
 
 namespace TwitchIntegration
