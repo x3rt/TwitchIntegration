@@ -67,7 +67,7 @@ namespace TwitchIntegration.UI
 
             UIRootRect = UIRoot.GetComponent<RectTransform>();
             UICanvas = UIRoot.GetComponent<Canvas>();
-
+            
             DisplayManager.Init();
 
             Display display = DisplayManager.ActiveDisplay;
@@ -77,7 +77,7 @@ namespace TwitchIntegration.UI
             // Create UI.
             CreateNavBar();
 
-
+            
             UIPanels.Add(Panels.Stats, new StatsPanel(UiBase));
             UIPanels.Add(Panels.Tools, new ToolsPanel(UiBase));
             UIPanels.Add(Panels.Options, new OptionsPanel(UiBase));

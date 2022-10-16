@@ -20,7 +20,8 @@ namespace TwitchIntegration.Config
         public static ConfigElement<float> Startup_Delay_Time;
         public static ConfigElement<int> Target_Display;
         public static ConfigElement<bool> Debug_Mode;
-        public static ConfigElement<bool> Log_Unity_Debug;
+        public static ConfigElement<string> Tag_Color;
+        public static ConfigElement<string> Command_Prefix;
         public static ConfigElement<UIManager.VerticalAnchor> Main_Navbar_Anchor;
 
         // internal configs
@@ -73,8 +74,15 @@ namespace TwitchIntegration.Config
                 KeyCode.F7);
 
             TwitchChat_Reconnect = new("Reconnect Twitch",
-                "The key to reset connection to Twitch if there are any issues", 
+                "The key to reset connection to Twitch if there are any issues.",
                 KeyCode.F3);
+
+            Tag_Color = new("Tag Color",
+                "The hex color code to use for the tags.",
+                "#bdbdbd");
+
+            Command_Prefix = new("Command Prefix", "The prefix for chat commands.", "!");
+
 
             Hide_On_Startup = new("Hide On Startup",
                 "Should the Navbar be hidden on startup?",
@@ -92,13 +100,9 @@ namespace TwitchIntegration.Config
             Main_Navbar_Anchor = new("Main Navbar Anchor",
                 "The vertical anchor of the main TwitchIntegration Navbar, in case you want to move it.",
                 UIManager.VerticalAnchor.Bottom);
-            
+
             Debug_Mode = new("Debug Mode",
                 "Enables debug mode, which will log more information to the console.",
-                false);
-
-            Log_Unity_Debug = new("Log Unity Debug",
-                "Should UnityEngine.Debug.Log messages be printed to TwitchIntegration's log?",
                 false);
         }
     }

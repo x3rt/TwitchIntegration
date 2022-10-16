@@ -142,7 +142,7 @@ namespace TwitchIntegration
 
         public static string? SetTag(string s)
         {
-            var a = Tools.GetClosestEntity();
+            var a = UserControl.Instance.target;
             if (a != null && a.TryGetComponent(out BibiteGenes bibiteGenes))
             {
                 bibiteGenes.speciesTag = s;

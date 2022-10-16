@@ -12,16 +12,6 @@ namespace TwitchIntegration
 
         public string TwitchOAuth { get; set; } = "oauth:token";
 
-        public string CommandPrefix { get; set; } = "!";
-
-        public float GUIHeight { get; set; } = 370f;
-
-        public float GUIWidth { get; set; } = 2f;
-
-        public string TagHexColor { get; set; } = "#bdbdbd";
-
-        public bool debugMode { get; set; } = false;
-
 
         public static void Load()
         {

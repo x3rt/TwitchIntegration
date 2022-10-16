@@ -5,6 +5,7 @@ using System;
 using System.Net.Sockets;
 using System.IO;
 using ManagementScripts;
+using TwitchIntegration.Config;
 
 namespace TwitchIntegration
 {
@@ -76,7 +77,7 @@ namespace TwitchIntegration
                 if (message == null) return;
                 lastMessageTime = DateTime.Now;
                 ParsedMessage parsedMessage = new ParsedMessage(message);
-                if (Settings.Instance.debugMode)
+                if (ConfigManager.Debug_Mode.Value)
                     Main.loggerInstance?.Msg($"{parsedMessage}");
 
                 HandleParsedMessage(parsedMessage);
@@ -99,10 +100,10 @@ namespace TwitchIntegration
                 {
                     string? message = parsedMessage.parameters;
 
-                    if (message?.StartsWith(Settings.Instance.CommandPrefix) ?? false)
+                    if (message?.StartsWith(ConfigManager.Command_Prefix.Value) ?? false)
                     {
                         string[] splitMessage = message.Split(' ');
-                        string command = splitMessage[0].ToLower().Replace(Settings.Instance.CommandPrefix, "");
+                        string command = splitMessage[0].ToLower().Replace(ConfigManager.Command_Prefix.Value, "");
                         List<string>? args = null;
                         if (splitMessage.Length > 1)
                         {
@@ -574,7 +575,7 @@ namespace TwitchIntegration
                     parsedCommand = new Command(commandParts[0], null);
                     break;
                 case "421":
-                    if (Settings.Instance.debugMode)
+                    if (ConfigManager.Debug_Mode.Value)
                     {
                         Main.loggerInstance?.Msg($"Unsupported IRC command: {commandParts[2]}");
                         Main.loggerInstance?.Msg($"Full message: {rawCommandComponent}");
@@ -595,7 +596,7 @@ namespace TwitchIntegration
                 case "366":
                 case "372":
                 case "375":
-                    if (Settings.Instance.debugMode)
+                    if (ConfigManager.Debug_Mode.Value)
                         Main.loggerInstance?.Msg($"Ignoring IRC: {commandParts[0]}");
                     return null;
                 default:

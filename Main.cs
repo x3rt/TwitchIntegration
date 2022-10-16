@@ -57,10 +57,10 @@ namespace TwitchIntegration
 
                         if (GameObject.Find("__app")?.GetComponent<Statistics>() == null)
                         {
-                            if (Settings.Instance.debugMode)
+                            if (ConfigManager.Debug_Mode.Value)
                                 LoggerInstance.Msg("Statistics not found");
                             GameObject.Find("__app")?.AddComponent<Statistics>();
-                            if (Settings.Instance.debugMode)
+                            if (ConfigManager.Debug_Mode.Value)
                                 LoggerInstance.Msg("Added statistics");
                         }
                         
@@ -68,14 +68,14 @@ namespace TwitchIntegration
 
                         if (GameObject.Find("__app")?.GetComponent<EventHandlers>() == null)
                         {
-                            if (Settings.Instance.debugMode)
+                            if (ConfigManager.Debug_Mode.Value)
                                 LoggerInstance.Msg("Event Handlers not found");
                             GameObject.Find("__app")?.AddComponent<EventHandlers>();
                         }
                         
                         // if (GameObject.Find("__app")?.GetComponent<x3rtGUI>() == null)
                         // {
-                        //     if (Settings.Instance.debugMode)
+                        //     if (ConfigManager.Debug_Mode.Value)
                         //         LoggerInstance.Msg("x3 GUI not found");
                         //     GameObject.Find("__app")?.AddComponent<x3rtGUI>();
                         // }
@@ -88,10 +88,10 @@ namespace TwitchIntegration
                         //     BiBiteMono? bb = ob.GetComponent<BiBiteMono>();
                         //     if (bb == null)
                         //     {
-                        //         if (Settings.Instance.debugMode)
+                        //         if (ConfigManager.Debug_Mode.Value)
                         //             LoggerInstance.Msg("Adding text for: " + ob.GetInstanceID());
                         //         _ = ob.AddComponent(typeof(BiBiteMono));
-                        //         if (Settings.Instance.debugMode)
+                        //         if (ConfigManager.Debug_Mode.Value)
                         //             LoggerInstance.Msg("After AddComponent for: " + ob.GetInstanceID());
                         //             
                         //     }
@@ -104,10 +104,10 @@ namespace TwitchIntegration
                         var a = GameObject.Find("__app")?.GetComponent<TwitchChat>();
                         if (a == null)
                         {
-                            if (Settings.Instance.debugMode)
+                            if (ConfigManager.Debug_Mode.Value)
                                 LoggerInstance.Msg("Twitch Chat not found, adding");
                             GameObject.Find("__app")?.AddComponent<TwitchChat>();
-                            if (Settings.Instance.debugMode)
+                            if (ConfigManager.Debug_Mode.Value)
                                 LoggerInstance.Msg("Added Twitch Chat");
                         }
                     }
@@ -136,7 +136,7 @@ namespace TwitchIntegration
 
         public override void OnSceneWasLoaded(int buildIndex, string sceneName)
         {
-            if (Settings.Instance.debugMode)
+            if (ConfigManager.Debug_Mode.Value)
                 LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
 
 
@@ -241,7 +241,7 @@ namespace TwitchIntegration
 
         private IEnumerator HighestGeneration()
         {
-            if (Settings.Instance.debugMode)
+            if (ConfigManager.Debug_Mode.Value)
                 LoggerInstance.Msg("Getting highest generation");
 
             Tools.GetHighestGeneration();
@@ -282,14 +282,6 @@ namespace TwitchIntegration
 
         public static void LogError(object message)
             => Log(message, LogType.Error);
-
-        public static void LogUnity(object message, LogType logType)
-        {
-            if (!ConfigManager.Log_Unity_Debug.Value)
-                return;
-
-            Log($"[Unity] {message}", logType);
-        }
 
         public static void Init(IExplorerLoader loader)
         {

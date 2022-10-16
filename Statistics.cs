@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json;
+using TwitchIntegration.Config;
 using UnityEngine;
 
 namespace TwitchIntegration
@@ -56,7 +57,7 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                if (Settings.Instance.debugMode)
+                if (ConfigManager.Debug_Mode.Value)
                     Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
@@ -78,7 +79,7 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                if (Settings.Instance.debugMode)
+                if (ConfigManager.Debug_Mode.Value)
                     Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
@@ -103,7 +104,7 @@ namespace TwitchIntegration
         {
             if (Instance == null)
             {
-                if (Settings.Instance.debugMode)
+                if (ConfigManager.Debug_Mode.Value)
                     Main.loggerInstance?.Msg("Statistics Instance is null");
                 return;
             }
